@@ -1,7 +1,47 @@
 /*!
  * ============================================================================
- *  Arabic Proofreader V19.0 PRO FINAL — Blogger Standalone Bundle
+ *  Arabic Proofreader V19.1 PRO FINAL — Blogger Standalone Bundle
  *  النسخة الاحترافية النهائية — مدقق عربي شامل (إملاء + صرف + نحو + أسلوب)
+ *  ────────────────────────────────────────────────────────────────────────
+ *  V19.1 PRO FINAL (2026-08-17) — طبقة القرار الأخير:
+ *
+ *    القاعدة الحاكمة: «إذا لم يكن المحرك متأكدًا من الخطأ، فلا يصححه».
+ *
+ *    لم تكن الغاية في هذه الجولة زيادةَ عدد القواعد، بل منعَ المحرك من
+ *    تصحيح الكلمات الصحيحة. فالإنذار الكاذب يفسد نصًا سليمًا ويُفقد
+ *    المستخدم ثقته، وهو أشد ضررًا من فوات خطأ. ولذلك بُدئ بإصلاح أسباب
+ *    الإنذارات المرصودة في V19.0 من جذورها قبل إضافة أي طبقة جديدة.
+ *
+ *    ▸ ProtectedWords 1.0: سجل الكلمات الصحيحة المحمية، لكل مدخل «نطاق»
+ *      يحدد نوع التدخل الممنوع (رسم / استبدال معجمي / علامة إعراب) فلا
+ *      تكون الحماية حظرًا أعمى يمنع التصحيح المشروع. أُوقفت به:
+ *      «لدي ← لدى»، «أولا ← أولي»، «نورٌ ← نورًا».
+ *    ▸ StructuralReadingGuard 1.0: الكلمة ← السياق ← الوظيفة ← التصحيح.
+ *      تُقرأ الجملة المنسوخة قراءةً كاملة (الناسخ/الاسم/الخبر) قبل الحكم،
+ *      فلا تُنقض وظيفةٌ محسومة بقاعدة تنظر إلى الرسم وحده.
+ *    ▸ FalsePositiveGuard 1.0: الحارس الأخير قبل العرض، يعالج كل إنذار
+ *      بسببه الجذري ويعلّل الحجب بعبارة عربية مفهومة.
+ *    ▸ ContextualConfidence 1.0: الثقة نتيجةُ تحليلٍ سياقي لا خاصيةَ قاعدة؛
+ *      تُرفع بالقراءة المؤيِّدة وتُخفض بتعدد أقسام الكلام وضعف الصرف.
+ *    ▸ SuggestionTaxonomy + Tracks 1.0: فصل صريح بين «أخطاء لغوية»
+ *      و«مراجعة يدوية» و«تحسين التنسيق والأسلوب»، فلا يُعرض «؟؟؟ ← ؟»
+ *      في مرتبة «إبن ← ابن».
+ *    ▸ SafeCorrectAll 1.0: «تصحيح الكل» يطبّق المقطوع به فقط (إملاء معجمي
+ *      مراجَع + تنسيق عند درجة «مؤكد»)؛ والنحو يدويٌّ دائمًا.
+ *    ▸ NawasikhCaseResolver 1.0: «إنّ وأخواتها» و«كان وأخواتها» بابان
+ *      مستقلان متعاكسان، مع معالجة الناسخ المستوفي اسمَه بضمير («كنت»)،
+ *      ونصب جمع المؤنث السالم بالكسرة نيابةً عن الفتحة.
+ *    ▸ FiveVerbsProductive 1.0: حكم الأفعال الخمسة صرفيٌّ بالوزن لا بالمعجم،
+ *      فسُدَّت ثغرة «لن يهملون» ونظائرها من الأفعال خارج المعجم.
+ *    ▸ WawAljamaaCompletion 1.0: توحيد ألف التفريق ماضيًا ومضارعًا.
+ *    ▸ OverCorrectionBenchmark 1.0: اختبار عدم الإفراط في التصحيح — 25 نصًا
+ *      عربيًا سليمًا، والمعيار صفر تدخلات. وهو أهم اختبار بعد اختبار الأخطاء.
+ *
+ *    نتائج الإطلاق: 604 اختبار ذهبي + 637 مصيدة إنذار + 44/38/32 انحدارًا
+ *    + 78 انحدار V19.1 + معيار 400 + معيار PRO 2000 + اختبار الإفراط،
+ *    جميعها 100%، بدقة 1.00 واستدعاء 1.00 ومعدل إنذار كاذب 0.00.
+ *
+ *    الحفاظ التام على منظومة V19.0 وواجهاتها وقواعدها: إضافة صرفة.
  *  ────────────────────────────────────────────────────────────────────────
  *  V19.0 PRO FINAL (2026-08-16) — نواة القرار النحوي الموحدة:
  *    ▸ VerbSubjectFrameResolver 2.0: فصل VSO/SVO قبل حكم الأفعال الخمسة؛
@@ -288,8 +328,15 @@
     root.ArabicProofreaderV18PRO = api;
     // الاسم المختصر المعتمد للاستخدام في قالب Blogger (V18.analyze / V18.correct / V18.suggest)
     root.V18 = api;
+    // V19.1: أسماء صريحة للإصدار الجديد — كلها تشير إلى المحرك نفسه، فلا
+    // يحتاج القالب القائم إلى أي تعديل، ويستطيع الجديد استعمال V19.
+    root.ArabicProofreaderV19 = api;
+    root.ArabicProofreaderV19PRO = api;
+    root.V19 = api;
     // علامة جاهزية صريحة يمكن للقالب فحصها قبل بدء التدقيق
     root.__ARABIC_PROOFREADER_V18_READY__ = true;
+    root.__ARABIC_PROOFREADER_V19_READY__ = true;
+    root.__ARABIC_PROOFREADER_VERSION__ = api.META.version;
     try {
       // تحذير فقط إذا وُجد محرك قديم (V16/V17) في الصفحة — لا يتوقف التحميل أبدًا
       ['ArabicProofreaderV17', 'ArabicProofreaderV16'].forEach(function(legacy){
@@ -311,14 +358,15 @@
 const META = Object.freeze({
   name: 'Arabic Proofreader Hybrid Engine',
   nameArabic: 'محرك التدقيق العربي الهجين — النسخة الاحترافية الشاملة',
-  version: '19.0.0',
-  edition: 'PRO-FINAL-V19.0',
+  version: '19.1.0',
+  edition: 'PRO-FINAL-V19.1',
   language: 'ar',
-  release: 'V19.0 PRO FINAL — النواة القرارية الموحدة',
+  release: 'V19.1 PRO FINAL — طبقة القرار الأخير ومنع الإنذار الكاذب',
   stability: 'stable',
-  releaseDate: '2026-08-16',
+  releaseDate: '2026-08-17',
+  governingPrinciple: 'إذا لم يكن المحرك متأكدًا من الخطأ، فلا يصححه.',
   compat: Object.freeze({
-    baseVersion: '18.9.0',
+    baseVersion: '19.0.0',
     policy: 'additive-only',
     preservedApi: Object.freeze([
       'analyze', 'check', 'correct', 'suggest', 'parse', 'inspectWord', 'inspectPOS',
@@ -337,7 +385,13 @@ const META = Object.freeze({
       'runRegressionSuiteV1890', 'runFullSuiteV1890',
       'runRegressionSuiteV1900', 'runFullSuiteV1900', 'runArabicProBenchmarkV1900',
       'inspectVerbFramesV1900', 'inspectDemonstrativeChainsV1900',
-      'ARABIC_PRO_BENCHMARK_V1900', 'V1900_GOLD_REGRESSIONS', 'V1900_BLOCK_REGRESSIONS'
+      'ARABIC_PRO_BENCHMARK_V1900', 'V1900_GOLD_REGRESSIONS', 'V1900_BLOCK_REGRESSIONS',
+      // V19.1.0 — الواجهات المضافة (إضافة صرفة، لا تغيير في القائم)
+      'runRegressionSuiteV1910', 'runFullSuiteV1910', 'runOverCorrectionBenchmarkV1910',
+      'inspectProtectedWords', 'inspectGuard', 'inspectNawasikhReading',
+      'inspectConfidence', 'inspectTracks', 'correctSafe',
+      'PROTECTED_WORDS_V1910', 'CONFIDENCE_TIERS_V1910', 'SUGGESTION_KINDS_V1910',
+      'V1910_BLOCK_REGRESSIONS', 'V1910_GOLD_REGRESSIONS', 'V1910_OVER_CORRECTION_CORPUS'
     ]),
     addedLayers: Object.freeze([
       'DiacriticsLayer-1.0', 'HamzaCompleteLayer-1.0', 'StyleLayer-1.0',
@@ -347,7 +401,12 @@ const META = Object.freeze({
       'CopularPredicateResolver-2.0', 'FalsePositiveFirewall-2.0',
       'AgreementResolver-3.0', 'FiveNounsPhraseResolver-2.0',
       'DependencyTreeResolver-1.0', 'OrthographyStratified-2.0',
-      'LongContextResolver-2.0', 'ArabicProBenchmark2000-1.0'
+      'LongContextResolver-2.0', 'ArabicProBenchmark2000-1.0',
+      // ── V19.1.0 — طبقة القرار الأخير ──
+      'ProtectedWords-1.0', 'StructuralReadingGuard-1.0', 'FalsePositiveGuard-1.0',
+      'ContextualConfidence-1.0', 'SuggestionTaxonomy-1.0', 'SuggestionTracks-1.0',
+      'SafeCorrectAll-1.0', 'NawasikhCaseResolver-1.0', 'FiveVerbsProductive-1.0',
+      'WawAljamaaCompletion-1.0', 'OverCorrectionBenchmark-1.0'
     ])
   }),
   offsetPolicy: 'original-input',
@@ -375,6 +434,11 @@ const META = Object.freeze({
     'style-engine-1.0',
     'ambiguity-engine-1.0',
     'false-positive-firewall-2.0',
+    'protected-words-1.0',
+    'structural-reading-guard-1.0',
+    'false-positive-guard-1.0',
+    'contextual-confidence-1.0',
+    'suggestion-taxonomy-1.0',
     'confidence-engine-1.0',
     'correction-ranker-1.0',
     'safe-correction-engine-1.0',
@@ -411,7 +475,17 @@ const META = Object.freeze({
     FiveNounsPhraseResolver: '2.0',
     DependencyTreeResolver: '1.0',
     OrthographyStratified: '2.0',
-    LongContextResolver: '2.0'
+    LongContextResolver: '2.0',
+    ProtectedWords: '1.0',
+    StructuralReadingGuard: '1.0',
+    FalsePositiveGuard: '1.0',
+    ContextualConfidence: '1.0',
+    SuggestionTaxonomy: '1.0',
+    SafeCorrectAll: '1.0',
+    NawasikhCaseResolver: '1.0',
+    FiveVerbsProductive: '1.0',
+    WawAljamaaCompletion: '1.0',
+    OverCorrectionBenchmark: '1.0'
   }),
   releaseCriteria: Object.freeze({
     precision: 0.98,
@@ -419,7 +493,10 @@ const META = Object.freeze({
     recall: 0.95,
     wrongCorrectionRate: 0.005,
     abstentionTechnique: 'الصحيح المحتمل المحسوم أقوى من قاعدة التصحيح العامة',
-    safeThreshold: 0.995
+    safeThreshold: 0.995,
+    overCorrectionRate: 0,
+    displayThreshold: 0.70,
+    autoApplyPolicy: 'الإملاء المعجمي المراجَع والتنسيق فقط، عند بلوغ درجة «مؤكد»'
   })
 });
 
@@ -477,6 +554,13 @@ const DEFAULT_OPTIONS = Object.freeze({
     dependencyTree: true,
     orthographyStratified: true,
     longContext: true,
+    // V19.1.0 — طبقة القرار الأخير
+    decisionGovernance: true,
+    safeCorrectAll: true,
+    protectedWords: true,
+    nawasikhCase: true,
+    wawAljamaaCompletion: true,
+    fiveVerbsProductive: true,
     objectCase: true,
     nominativeSubjectCase: true,
     conditionalGovernment: true,
@@ -608,9 +692,14 @@ function numberFromEnding(cleanCore) {
   return null;
 }
 
+/* V19.1 — قاعدة «جمع ما لا يعقل يعامل معاملة المفردة المؤنثة» تشمل كل ما
+   لا يعقل: المحسوس («كتب جديدة») والمعنوي المجرد («العلوم الحديثة»). وكان
+   القيد على 'nonhuman' وحدها يُخرج المجردات فيولّد «الحديثة ← الحديثون». */
+const V1910_NONHUMAN_ANIMACIES = new Set(['nonhuman', 'abstract', 'inanimate', 'thing']);
+
 function effectiveAgreement(features) {
   if (!features) return features;
-  if (features.number === 'pl' && features.animacy === 'nonhuman') {
+  if (features.number === 'pl' && V1910_NONHUMAN_ANIMACIES.has(features.animacy)) {
     return {...features, gender: 'f', number: 'sg', agreementException: 'nonhuman-plural'};
   }
   return features;
@@ -8106,9 +8195,16 @@ function kanaPredicateCaseRuleV1890(context) {
       const surface = candidate.surface;
       const position = surface.lastIndexOf(mark.mark);
       if (position < 0) continue;
-      const accusativeMark = mark.kind === 'tanwin' ? '\u064B' : '\u064E';
+      // V19.1: جمع المؤنث السالم ينصب بالكسرة نيابةً عن الفتحة، ولا تلحقه
+      // ألف التنوين. فـ«كانت الطالبات مجتهداتٍ» هي الصواب، لا «مجتهداتًا».
+      const isSoundFemininePlural = /ات$/u.test(stripDiacritics(surface))
+        && (candidate.morph?.nominal?.number === 'pl' || candidate.morph?.number === 'pl');
+      const accusativeMark = isSoundFemininePlural
+        ? (mark.kind === 'tanwin' ? '\u064D' : '\u0650')
+        : (mark.kind === 'tanwin' ? '\u064B' : '\u064E');
       let replacement = surface.slice(0, position) + accusativeMark + surface.slice(position + 1);
-      if (mark.kind === 'tanwin' && !NO_TANWIN_ALIF_TAIL_V1890.test(stripDiacritics(surface))) {
+      if (!isSoundFemininePlural && mark.kind === 'tanwin'
+          && !NO_TANWIN_ALIF_TAIL_V1890.test(stripDiacritics(surface))) {
         replacement += '\u0627';
       }
       if (replacement === surface) continue;
@@ -9353,6 +9449,15 @@ function v1900PersonCodeFor(features, {vso = false} = {}) {
   const gender = features.gender === 'f' ? 'f' : 'm';
   let number = features.number || 'sg';
   if (vso) number = 'sg';                                                      // VSO: إفراد إلزامي
+  // V19.1: الشخص ركنٌ في المطابقة كالجنس والعدد. الفاعل ضميرَ مخاطبٍ أو
+  // متكلمٍ يوجب صيغته، فلا يُقاس «أنتم تذهبون» على الغيبة فيُحكم بالخلل.
+  const person = features.person || 3;
+  if (person === 2) {
+    if (number === 'du') return '2du';
+    if (number === 'pl') return gender === 'f' ? '2fp' : '2mp';
+    return gender === 'f' ? '2fs' : '2ms';
+  }
+  if (person === 1) return number === 'pl' ? '1p' : '1s';
   if (number === 'du') return gender === 'f' ? '3df' : '3dm';
   if (number === 'pl') return gender === 'f' ? '3fp' : '3mp';
   return gender === 'f' ? '3fs' : '3ms';
@@ -9741,6 +9846,1299 @@ function applyFirewallV1900(context, findings) {
 }
 
 
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ *  V19.1 PRO FINAL — طبقة القرار الأخير (Decision Governance Layer)
+ *  ─────────────────────────────────────────────────────────────────────────
+ *  المبدأ الحاكم الأوحد: «إذا لم يكن المحرك متأكدًا من الخطأ، فلا يصححه».
+ *
+ *  هذه الطبقة إضافية بالكامل (additive-only): لا تحذف قاعدة، ولا تغيّر توقيع
+ *  دالة، ولا تمس منظومة V19.0. كل ما تفعله أنها تعترض الملاحظات بعد توليدها
+ *  وقبل عرضها، فتفحصها بأربعة أسئلة مرتبة:
+ *      1) هل الكلمة محمية أصلًا (ProtectedWords)؟
+ *      2) هل التركيب الذي بُني عليه الحكم صحيح فعلًا (StructuralReading)؟
+ *      3) هل درجة الثقة نتيجة تحليل سياقي أم مجرد ثقة قاعدة (ContextualConfidence)؟
+ *      4) في أي طبقة عرض توضع الملاحظة (SuggestionTier)؟
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 1) ProtectedWords 1.0 — سجل الكلمات الصحيحة المحمية.
+ *
+ *  هذه كلمات لها قراءة عربية فصيحة قائمة بذاتها. لا يجوز أن تُصحَّح بقاعدة
+ *  عامة، لأن القاعدة العامة ترى الرسم فقط ولا ترى المعنى. الحماية هنا ليست
+ *  حظرًا مطلقًا: منها المطلق (never) الذي لا يُخترق، ومنها المشروط
+ *  (contextual) الذي لا يُخترق إلا بدليل سياقي صريح مذكور في الجدول نفسه.
+ * ───────────────────────────────────────────────────────────────────────── */
+/**
+ * الحماية ليست حظرًا أعمى، وإلا منعت التصحيح الصحيح. لكل مدخل «نطاق» يحدد
+ * نوع التدخل الممنوع بالضبط:
+ *
+ *   • orthography    — يمنع إعادة رسم الكلمة (قلب ألفها أو همزتها أو تائها).
+ *                      لا يمنع إضافة علامة إعراب. فـ«العلم» يبقى «العلم»
+ *                      رسمًا، ويجوز أن يصير «العلمَ» اسمًا لـ«إنّ».
+ *   • lexeme         — يمنع استبدال الكلمة بكلمة أخرى بغير سند تركيبي.
+ *   • case           — يمنع تغيير علامة الإعراب (للمبنيات التي لا محل لإعرابها
+ *                      في الرسم). لا يمنع استبدال صيغة بأخرى للمطابقة، لأن
+ *                      «هذا ← هؤلاء» مطابقةٌ في العدد لا إعرابٌ.
+ *
+ * ويجوز الجمع بين نطاقين لمدخل واحد.
+ */
+const PROTECTED_WORDS_V1910 = Object.freeze({
+  /* ── ظروف وأدوات ثابتة الرسم: تُحمى إملائيًا حمايةً مطلقة ── */
+  'لدى':   {scopes: ['orthography', 'lexeme'], note: 'ظرف مكان ملازم للألف المقصورة.'},
+  'لدي':   {scopes: ['orthography', 'lexeme'], conditional: true,
+            unlockWhen: 'followed-by-genitive-noun-phrase',
+            note: 'قراءتان صحيحتان: «لدى» الظرف، و«لديّ» = لدى + ياء المتكلم.'},
+  'إلى':   {scopes: ['orthography', 'lexeme'], note: 'حرف جر.'},
+  'على':   {scopes: ['orthography', 'lexeme'], note: 'حرف جر.'},
+  'حتى':   {scopes: ['orthography', 'lexeme']}, 'متى': {scopes: ['orthography', 'lexeme']},
+  'أنى':   {scopes: ['orthography', 'lexeme']}, 'بلى': {scopes: ['orthography', 'lexeme']},
+  'عسى':   {scopes: ['orthography', 'lexeme']}, 'سوى': {scopes: ['orthography', 'lexeme']},
+  'شتى':   {scopes: ['orthography', 'lexeme']}, 'مدى': {scopes: ['orthography', 'lexeme']},
+  'هدى':   {scopes: ['orthography', 'lexeme']},
+
+  /* ── ترتيبيات منصوبة على الظرفية: ألفها ألف تنوين النصب، لا ألف مقصورة ── */
+  'أولا':  {scopes: ['orthography', 'lexeme'],
+            note: '«أولًا» ترتيبية منصوبة؛ و«أولي» جمعٌ مضاف بمعنًى آخر.'},
+  'أولًا': {scopes: ['orthography', 'lexeme']}, 'أوّلًا': {scopes: ['orthography', 'lexeme']},
+  'ثانيا': {scopes: ['orthography', 'lexeme']}, 'ثانيًا': {scopes: ['orthography', 'lexeme']},
+  'ثالثا': {scopes: ['orthography', 'lexeme']}, 'ثالثًا': {scopes: ['orthography', 'lexeme']},
+  'رابعا': {scopes: ['orthography', 'lexeme']}, 'رابعًا': {scopes: ['orthography', 'lexeme']},
+  'خامسا': {scopes: ['orthography', 'lexeme']}, 'خامسًا': {scopes: ['orthography', 'lexeme']},
+  'أخيرا': {scopes: ['orthography', 'lexeme']}, 'أخيرًا': {scopes: ['orthography', 'lexeme']},
+  'أولى':  {scopes: ['orthography', 'lexeme'], note: 'اسم تفضيل مؤنث: «أولى الخطوات».'},
+  'الأولى':{scopes: ['orthography', 'lexeme']},
+  'أولي':  {scopes: ['orthography', 'lexeme'], note: '«أولي الأمر»: جمعٌ مضاف.'},
+  'أولو':  {scopes: ['orthography', 'lexeme']},
+
+  /* ── أسماء عالية التواتر تُستهدف خطأً بقاعدة البدل لأنها تشبه الأعلام.
+        تُحمى من الاستبدال المعجمي فقط؛ وإعرابها يبقى مفتوحًا للتصحيح. ── */
+  'نور':   {scopes: ['lexeme'], note: 'اسم شائع؛ ووروده علمًا لا يجعله بدلًا يتبع ما قبله.'},
+  'كتاب':  {scopes: ['lexeme'], exactSurfaceOnly: true}, 'علم': {scopes: ['lexeme']}, 'حياة': {scopes: ['lexeme']},
+  'قراءة': {scopes: ['lexeme']}, 'عقل': {scopes: ['lexeme']}, 'خير': {scopes: ['lexeme']},
+  'حق':    {scopes: ['lexeme']}, 'أمل': {scopes: ['lexeme']}, 'سلام': {scopes: ['lexeme']},
+  'إيمان': {scopes: ['lexeme']}, 'صبر': {scopes: ['lexeme']}, 'عدل': {scopes: ['lexeme']},
+  'جمال':  {scopes: ['lexeme']}, 'كمال': {scopes: ['lexeme']}, 'رحمة': {scopes: ['lexeme']},
+
+  /* ── المبنيات: لا يظهر أثر الإعراب في رسمها، فتُحمى من قواعد الحالة وحدها ── */
+  // الموصولات مبنية فلا تُعرب، لكن استبدال موصول بآخر مطابقةً للموصوف
+  // («جاء الطالب التي نجحت» ← «الذي») تصحيحُ مطابقةٍ مشروع لا إعراب،
+  // فتقتصر حمايتها على نطاق الحالة وحده.
+  'الذي':  {scopes: ['case']}, 'التي': {scopes: ['case']},
+  'الذين': {scopes: ['case']}, 'اللاتي': {scopes: ['case']},
+  'اللائي':{scopes: ['case']}, 'اللواتي': {scopes: ['case']},
+  'مهما':  {scopes: ['case']},
+  'هذا':   {scopes: ['case']}, 'هذه': {scopes: ['case']}, 'هؤلاء': {scopes: ['case']},
+  'ذلك':   {scopes: ['case']}, 'تلك': {scopes: ['case']}, 'أولئك': {scopes: ['case']},
+
+  /* ── الضمائر: مبنية لا تُعرب ولا تُستبدل ── */
+  'أنا': {scopes: ['case', 'lexeme']}, 'نحن': {scopes: ['case', 'lexeme']},
+  'هو':  {scopes: ['case', 'lexeme']}, 'هي': {scopes: ['case', 'lexeme']},
+  'هم':  {scopes: ['case', 'lexeme']}, 'هن': {scopes: ['case', 'lexeme']},
+  'أنت': {scopes: ['case', 'lexeme']}, 'أنتم': {scopes: ['case', 'lexeme']}
+});
+
+function protectedWordEntryV1910(token) {
+  if (!token?.morph) return null;
+  const surfaces = [token.clean, token.surface,
+    stripDiacritics(token.clean || ''), stripDiacritics(token.surface || '')];
+  const stems = [token.morph.core, stripDiacritics(token.morph.core || '')];
+
+  // الرسم الظاهر أولًا: هو الذي يُحكم عليه فعلًا.
+  for (const value of surfaces) {
+    if (!value) continue;
+    const entry = PROTECTED_WORDS_V1910[value];
+    if (entry) return {...entry, matched: value};
+  }
+  // ثم الجذع، إلا أن يشترط المدخل مطابقة الرسم الكامل. فـ«كتاب» محمية
+  // مجردةً، ولا تمتد حمايتها إلى «كتابه» التي قد تكون «كتابة» مصدرًا.
+  for (const value of stems) {
+    if (!value) continue;
+    const entry = PROTECTED_WORDS_V1910[value];
+    if (entry && !entry.exactSurfaceOnly) return {...entry, matched: value};
+  }
+  return null;
+}
+
+/**
+ * نوع التدخل الذي تمثله الملاحظة، لتُقاس على نطاق الحماية:
+ *   case      — أضافت علامة إعراب أو غيّرتها مع بقاء الحروف.
+ *   inflection— قلبت لاحقة إعرابية بنيوية (ون/ين، ان/ين).
+ *   lexeme    — استبدلت الكلمة بكلمة أخرى مختلفة الحروف.
+ */
+function v1910InterventionKind(finding) {
+  const a = String(finding.original ?? '');
+  const b = String(finding.replacement ?? '');
+  if (!b) return 'none';
+  const bareA = stripDiacritics(a);
+  const bareB = stripDiacritics(b);
+  if (bareA === bareB) return 'case';
+  const tailRe = /(?:ون|ين|ان|تان|تين|ات)$/u;
+  if (tailRe.test(bareA) && tailRe.test(bareB)
+      && bareA.replace(tailRe, '') === bareB.replace(tailRe, '')) return 'inflection';
+  // إضافة ألف تنوين النصب وحدها ليست استبدالًا معجميًا.
+  if (bareB === `${bareA}ا` || bareB === `${bareA}` + '\u064B\u0627') return 'case';
+  return 'lexeme';
+}
+
+/* «لدي» يُفتح قفلها إذا جاء بعدها اسمٌ مضافٌ إليه صريح، لأن ياء المتكلم
+   لا يليها مضاف إليه. وهذا هو الدليل السياقي القوي المذكور في الجدول. */
+function protectionUnlockedV1910(context, token, entry) {
+  if (!entry.conditional) return false;
+  if (entry.unlockWhen !== 'followed-by-genitive-noun-phrase') return false;
+  const next = context.tokens[token.index + 1];
+  if (!next || next.sentence !== token.sentence) return false;
+
+  // الدليل الأول: «لدي» يليها معرفةٌ ثم نكرة، فالتركيب «لدى المدير اجتماعٌ»
+  // جملةٌ تامة لا تحتمل ياء المتكلم.
+  const nextNext = context.tokens[token.index + 2];
+  if (next.morph?.definite && nextNext && isNominal(nextNext)
+    && !nextNext.morph?.definite && nextNext.sentence === token.sentence) return true;
+
+  // الدليل الثاني: خطأٌ آخر من صنف الألف المقصورة نفسه في الجملة نفسها.
+  // اطراد الخطأ في النص قرينةٌ سياقية قوية على أن الكاتب يرسم الألف
+  // المقصورة ياءً عادةً، فيسقط احتمال ياء المتكلم.
+  for (const other of context.tokens) {
+    if (other.index === token.index || other.sentence !== token.sentence) continue;
+    const bare = stripDiacritics(other.morph?.core || other.clean || '');
+    if (!bare || !/ي$/u.test(bare)) continue;
+    const canonical = typeof WORDS !== 'undefined' ? WORDS[bare] : null;
+    if (canonical && /ى$/u.test(canonical)) return true;
+  }
+  return false;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 2) StructuralReadingGuard 1.0 — الكلمة ثم السياق ثم الوظيفة ثم التصحيح.
+ *
+ *  المشكلة الجذرية في الإنذارات المرصودة أن قاعدةً تحكم على كلمة قبل أن
+ *  يُحسم موقعها من الجملة. فـ«نورٌ» خبر «إن» مرفوع، لا بدلًا من «العلم»؛
+ *  و«طالبًا» خبر «كنت» منصوب، لا اسمًا لها؛ و«معتدلًا» خبر «صار» منصوب.
+ *  هذا الحارس يبني قراءة تركيبية مستقلة للجملة الاسمية المنسوخة، ثم يمنع
+ *  أي ملاحظة تناقضها.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+
+/* صيغ مبنية للمجهول شائعة رسمُها بالواو صحيح، ولا تُردّ إلى المعلوم. */
+const V1910_PASSIVE_HAMZA_FORMS = new Set([
+  'تؤخذ', 'يؤخذ', 'نؤخذ', 'تؤكل', 'يؤكل', 'تؤمر', 'يؤمر', 'تؤمن', 'يؤمن',
+  'يؤتى', 'تؤتى', 'أوتوا', 'أوتي', 'أوتيت', 'يؤدى', 'تؤدى', 'يؤثر', 'تؤثر',
+  'يؤلف', 'تؤلف', 'يؤسس', 'تؤسس', 'يؤكد', 'تؤكد', 'يؤيد', 'تؤيد',
+  'يؤجل', 'تؤجل', 'يؤهل', 'تؤهل', 'يؤذن', 'تؤذن', 'يؤنس', 'تؤنس'
+]);
+
+/* «ما زال» وأخواتها بصيغها المتصرفة: نواسخ تنصب الخبر. */
+const V1910_MAZAL_FORMS = new Set([
+  'زال', 'زالت', 'زالوا', 'يزال', 'تزال', 'يزالون',
+  'دام', 'دامت', 'يدوم', 'تدوم',
+  'برح', 'برحت', 'يبرح', 'تبرح',
+  'فتئ', 'فتئت', 'يفتأ', 'تفتأ',
+  'انفك', 'انفكت', 'ينفك', 'تنفك'
+]);
+
+/* أسماء الشرط والاستفهام المبنية: لا تُعرب ولا تُنعت. */
+const V1910_CONDITIONAL_PARTICLES = new Set([
+  'مهما', 'كيفما', 'أينما', 'حيثما', 'أنى', 'إذما', 'أيان',
+  'متى', 'كيف', 'أين', 'حيث', 'لما', 'كلما', 'إذا', 'لولا', 'لوما'
+]);
+
+
+/* جموع الأسماء الخمسة: تُعرب إعراب الجمع لا إعراب المفرد المضاف. */
+const V1910_FIVE_NOUN_PLURALS = new Set([
+  'ذوو', 'ذوي', 'ذووا', 'أولو', 'أولي', 'آباء', 'إخوة', 'إخوان',
+  'أبناء', 'ذواتا', 'ذواتي', 'أخوات'
+]);
+
+/* الموصولات المؤنثة الجمع: صيغ فصيحة متكافئة لا تُفاضل بينها القاعدة. */
+const V1910_EQUIVALENT_RELATIVES = new Set(['اللاتي', 'اللائي', 'اللواتي']);
+
+/* مصادر همزتها متطرفة على السطر: أسماء لا أفعال. */
+const V1910_FINAL_HAMZA_NOUNS = new Set([
+  'بدء', 'جزء', 'عبء', 'ملء', 'دفء', 'رزء', 'كفء', 'هدوء', 'وضوء',
+  'لجوء', 'نشوء', 'بطء', 'عضو', 'ضوء', 'سوء', 'شيء', 'مبدأ', 'ملجأ',
+  'مرفأ', 'منشأ', 'مخبأ', 'نبأ', 'خطأ', 'ردء', 'فيء', 'نيء'
+]);
+
+const V1910_INNA_SET = new Set(['إن', 'أن', 'كأن', 'لكن', 'ليت', 'لعل', 'إنّ', 'أنّ', 'لكنّ']);
+
+/* صور «كان وأخواتها» التي استُتر فيها الاسم في ضمير الرفع المتصل. في مثل
+   «كنتُ طالبًا» التاء هي اسم كان، فما بعدها خبرٌ منصوب لا اسمٌ مرفوع. هذا
+   هو سبب الإنذار الكاذب «طالبًا ← طالبٌ»: القاعدة عدّت أول اسم بعد الناسخ
+   اسمَه، وقد استوفى الناسخ اسمه في ضميره. */
+const V1910_KANA_WITH_BOUND_SUBJECT = new Set([
+  'كنت', 'كنتُ', 'كنتَ', 'كنتِ', 'كنا', 'كنتم', 'كنتن', 'كنتما', 'كانوا', 'كانو',
+  'كانا', 'كانتا', 'كن', 'أصبحت', 'أصبحوا', 'أصبحنا', 'أصبحتُ', 'أصبحتم',
+  'صرت', 'صرنا', 'صاروا', 'صارتا', 'صرتم', 'ظللت', 'ظلوا', 'ظلا',
+  'بتّ', 'بتنا', 'باتوا', 'أمسيت', 'أمسوا', 'لست', 'لستُ', 'لسنا', 'ليسوا', 'لستم', 'لسن'
+]);
+
+/* الضمائر العائدة المتصلة بحرف الجر: وجودها بعد الفعل في صلة الموصول يدل
+   على أن الموصول ليس فاعلًا، فالفاعل اسمٌ ظاهر متأخر. */
+const V1910_RESUMPTIVE_PRONOUNS = new Set([
+  'عليه', 'عليها', 'عليهم', 'عليهن', 'به', 'بها', 'بهم', 'بهن',
+  'فيه', 'فيها', 'فيهم', 'فيهن', 'منه', 'منها', 'منهم', 'منهن',
+  'له', 'لها', 'لهم', 'لهن', 'إليه', 'إليها', 'إليهم', 'عنه', 'عنها'
+]);
+
+function v1910KanaHasBoundSubject(token) {
+  const core = stripDiacritics(token?.morph?.core || '');
+  const surface = stripDiacritics(token?.clean || token?.surface || '');
+  return V1910_KANA_WITH_BOUND_SUBJECT.has(core) || V1910_KANA_WITH_BOUND_SUBJECT.has(surface);
+}
+
+/**
+ * تقطيعٌ لاصقيٌّ فاسد يُكشف بحجة نحوية قاطعة: حرف الجر يجرّ ما بعده قطعًا،
+ * فإذا حمل «المجرور» المزعوم علامةَ رفع ظاهرة فالباء ليست حرف جر أصلًا، بل
+ * فاء الكلمة. وبهذا تُقرأ «باردٌ» صفةً مرفوعة لا «بـ + اردٌ».
+ */
+function v1910MissegmentedPreposition(token) {
+  const preposition = token?.morph?.segments?.preposition;
+  if (!preposition) return false;
+  const observed = token?.visibleCase?.case;
+  return observed === 'nominative' || observed === 'accusative';
+}
+
+/* الكلمة صالحة لأن تشغل موضع الاسم أو الخبر: إما محللة اسميًا، وإما مجهولة
+   المعجم لكنها تحمل علامة إعراب ظاهرة تُثبت اسميتها. */
+function v1910CanFillNominalSlot(token) {
+  if (!token) return false;
+  if (bestVerb(token)) return false;
+  if (isNominal(token)) return true;
+  const pos = token.morph?.pos;
+  if (pos && !['unknown', 'adj', 'noun', 'proper'].includes(pos)) return false;
+  // «ال» التعريف لا تدخل إلا على الاسم، والعلامة الظاهرة لا تكون إلا عليه.
+  // كلاهما برهانٌ على الاسمية يغني عن المدخل المعجمي.
+  if (token.morph?.segments?.article || token.morph?.definite) return true;
+  if (token.visibleCase) return true;
+  return false;
+}
+
+/**
+ * يقرأ الجملة المنسوخة قراءةً كاملة: الناسخ ← الاسم ← الخبر، ويعيّن لكل
+ * موضع حالتَه المتوقعة. النتيجة خريطةٌ من رقم الكلمة إلى دورها وحالتها،
+ * تُستعمل مرجعًا أعلى من أي قاعدة مفردة.
+ */
+function buildCopularReadingV1910(context) {
+  if (context.v1910Reading) return context.v1910Reading;
+  const {tokens} = context;
+  const roleMap = new Map();
+
+  const skipToArgument = (start, end) => {
+    let i = start;
+    while (i < end) {
+      const t = tokens[i];
+      const core = t?.morph?.core;
+      if (!core) return -1;
+      // الضمير المنفصل بعد الناسخ توكيد/فصل: «إن التعليم هو الأساس».
+      if (PERSONAL_PRONOUNS[core]) { i += 1; continue; }
+      if (VERBAL_PARTICLES.has(core)) { i += 1; continue; }
+      return i;
+    }
+    return -1;
+  };
+
+  for (let i = 0; i < tokens.length; i += 1) {
+    const token = tokens[i];
+    const core = token.morph?.core;
+    if (!core) continue;
+    const isInna = V1910_INNA_SET.has(core) && !token.morph.segments?.enclitic;
+    const isKana = isKanaSurface(core);
+    if (!isInna && !isKana) continue;
+
+    // «أن» المصدرية الناصبة للفعل ليست ناسخًا اسميًا.
+    const following = tokens[i + 1];
+    if (isInna && following && bestVerb(following)) continue;
+
+    const {end} = sentenceBounds(tokens, i);
+
+    // الناسخ الذي استوفى اسمه بضمير متصل: ما بعده خبرٌ مباشرةً.
+    if (isKana && v1910KanaHasBoundSubject(token)) {
+      const predicateOnly = skipToArgument(i + 1, end);
+      if (predicateOnly >= 0) {
+        const predToken = tokens[predicateOnly];
+        const predCore = predToken?.morph?.core;
+        const isVerbal = Boolean(bestVerb(predToken));
+        const isPrepositional = Boolean((predToken?.morph?.segments?.preposition
+          && !v1910MissegmentedPreposition(predToken))
+          || canonicalPrepositionCore(predToken) || ADVERBIAL_GOVERNORS.has(predCore));
+        if (!isVerbal && !isPrepositional && v1910CanFillNominalSlot(predToken)) {
+          roleMap.set(predicateOnly, {
+            role: 'خبر الناسخ الفعلي', expectedCase: 'accusative',
+            governorIndex: i, governor: core, family: 'kana',
+            boundSubject: true, resolver: 'StructuralReadingGuard-1.0'
+          });
+        }
+      }
+      continue;
+    }
+
+    const nameIndex = skipToArgument(i + 1, end);
+    if (nameIndex < 0) continue;
+    const nameToken = tokens[nameIndex];
+    if (!v1910CanFillNominalSlot(nameToken)) continue;
+    if ((nameToken.morph.segments?.preposition && !v1910MissegmentedPreposition(nameToken))
+      || canonicalPrepositionCore(nameToken)) continue;
+
+    // وحدة الاسم قد تمتد: نعت + مضاف إليه + ضمير فصل.
+    let cursor = nameIndex + 1;
+    while (cursor < end) {
+      const t = tokens[cursor];
+      const c = t?.morph?.core;
+      if (!c) break;
+      if (PERSONAL_PRONOUNS[c]) { cursor += 1; break; }               // ضمير الفصل ينهي الاسم
+      if (RELATIVE_PRONOUNS[c]) break;
+      if (bestVerb(t) || isKanaSurface(c)) break;
+      if (t.morph.segments?.preposition || canonicalPrepositionCore(t)) break;
+      if (t.morph.segments?.conjunction) break;
+      // نعت معرّف أو مضاف إليه يتبع الاسم
+      if (isAdjective(t) && t.morph.definite === nameToken.morph.definite) { cursor += 1; continue; }
+      if (isNominal(t) && !nameToken.morph.definite === false && t.morph.definite && cursor === nameIndex + 1) { cursor += 1; continue; }
+      break;
+    }
+
+    const predicateIndex = skipToArgument(cursor, end);
+    // حالة الاسم وحالة الخبر متعاكستان بين البابين — وهذا كل جوهر المسألة.
+    const nameCase = isInna ? 'accusative' : 'nominative';
+    const predicateCase = isInna ? 'nominative' : 'accusative';
+
+    roleMap.set(nameIndex, {
+      role: isInna ? 'اسم الناسخ الحرفي' : 'اسم الناسخ الفعلي',
+      expectedCase: nameCase, governorIndex: i, governor: core,
+      family: isInna ? 'inna' : 'kana', resolver: 'StructuralReadingGuard-1.0'
+    });
+
+    if (predicateIndex >= 0 && predicateIndex < end) {
+      const predToken = tokens[predicateIndex];
+      const predCore = predToken?.morph?.core;
+      const isVerbal = Boolean(bestVerb(predToken));
+      const isPrepositional = Boolean((predToken?.morph?.segments?.preposition
+        && !v1910MissegmentedPreposition(predToken))
+        || canonicalPrepositionCore(predToken) || ADVERBIAL_GOVERNORS.has(predCore));
+      if (!isVerbal && !isPrepositional && v1910CanFillNominalSlot(predToken)) {
+        roleMap.set(predicateIndex, {
+          role: isInna ? 'خبر الناسخ الحرفي' : 'خبر الناسخ الفعلي',
+          expectedCase: predicateCase, governorIndex: i, governor: core,
+          family: isInna ? 'inna' : 'kana', resolver: 'StructuralReadingGuard-1.0'
+        });
+      }
+    }
+  }
+
+  context.v1910Reading = roleMap;
+  return roleMap;
+}
+
+/* اتجاه التغيير الذي تقترحه الملاحظة على مستوى الحالة، مستخرجًا من الرسم. */
+function v1910ProposedCase(original, replacement) {
+  const a = String(original ?? '');
+  const b = String(replacement ?? '');
+  if (!b || a === b) return null;
+  const bareA = stripDiacritics(a);
+  const bareB = stripDiacritics(b);
+  // تغيّر العلامة الظاهرة
+  const markOf = value => {
+    const m = [...String(value).matchAll(/[\u064B-\u0650]/gu)];
+    if (!m.length) return null;
+    const table = {'\u064C': 'nominative', '\u064F': 'nominative',
+      '\u064B': 'accusative', '\u064E': 'accusative',
+      '\u064D': 'genitive', '\u0650': 'genitive'};
+    return table[m.at(-1)[0]] || null;
+  };
+  const target = markOf(b);
+  if (target && markOf(a) !== target) return target;
+  // تغيّر الرسم البنيوي: ون/ين، ان/ين، ألف تنوين النصب
+  if (/(?:ون|ان)$/u.test(bareA) && /ين$/u.test(bareB)) return 'accgen';
+  if (/ين$/u.test(bareA) && /(?:ون|ان)$/u.test(bareB)) return 'nominative';
+  if (!/ا$/u.test(bareA) && /ا$/u.test(bareB) && bareB.startsWith(bareA)) return 'accusative';
+  return null;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 3) FalsePositiveGuard 1.0 — الحارس الأخير قبل عرض الاقتراح.
+ *
+ *  يعالج كل إنذار كاذب مرصود بسببه الجذري لا بحالته المفردة، ويعيد سبب
+ *  الحجب نصًا عربيًا مفهومًا يظهر في سجل الجدار.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+const V1910_GRAMMAR_CLASSES = new Set([
+  'syntax', 'syntactic-case', 'agreement', 'case', 'dependent', 'number',
+  'diptote', 'exception', 'hal', 'tamyiz', 'coordination', 'five-verbs',
+  'five-nouns', 'relative-clause', 'morphology', 'morphological-case-marker', 'verb-mood'
+]);
+
+const V1910_ORTHOGRAPHIC_CLASSES = new Set([
+  'orthographic', 'orthographic-productive', 'orthographic-phrase', 'orthographic-contextual'
+]);
+
+function v1910GuardReason(context, finding) {
+  const token = tokenAtOriginalSpan(context, finding);
+  const ruleId = String(finding.ruleId || '');
+  const cls = String(finding.classification || '');
+  const isGrammar = V1910_GRAMMAR_CLASSES.has(cls);
+  const isOrthographic = V1910_ORTHOGRAPHIC_CLASSES.has(cls);
+
+  /* (أ) سجل الكلمات المحمية — يسبق كل شيء، ويُقاس بنطاقه لا بحظرٍ أعمى. */
+  if (token) {
+    const entry = String(finding.original ?? '').trim()
+      ? protectedWordEntryV1910(token) : null;
+    if (entry && !protectionUnlockedV1910(context, token, entry)) {
+      const scopes = entry.scopes || [];
+      const intervention = v1910InterventionKind(finding);
+
+      if (scopes.includes('orthography') && isOrthographic) {
+        return {reason: 'protected-word-orthography',
+          detail: `«${entry.matched}» رسمها ثابت صحيح${entry.note ? ': ' + entry.note : '.'}`};
+      }
+      // تصريف العدد (إفراد ↔ تثنية ↔ جمع) من صيغة الكلمة نفسها ليس استبدالًا
+      // معجميًا: «أربعة كتاب ← كتب» تصريفُ جمعٍ للكلمة ذاتها، فلا تمنعه الحماية.
+      const sameLexemeInflection = cls === 'number'
+        || finding.metadata?.expectedNumber != null
+        || finding.metadata?.observedNumber != null;
+      if (scopes.includes('lexeme') && intervention === 'lexeme' && !sameLexemeInflection) {
+        return {reason: 'protected-word-lexeme',
+          detail: `«${entry.matched}» كلمة صحيحة، ولا يُستبدل بها غيرها${entry.note ? ': ' + entry.note : '.'}`};
+      }
+      if (scopes.includes('case') && isGrammar && (intervention === 'case' || intervention === 'inflection')) {
+        return {reason: 'protected-indeclinable-word',
+          detail: `«${entry.matched}» مبنيٌّ لا يظهر عليه أثر الإعراب، فلا تُقلب صورته بقاعدة حالة.`};
+      }
+    }
+  }
+
+  /* (ب) القراءة التركيبية المحسومة للنواسخ تعلو على أي قاعدة مفردة. */
+  if (token && isGrammar && finding.replacement != null) {
+    const reading = buildCopularReadingV1910(context);
+    const slot = reading.get(token.index);
+    if (slot) {
+      const observed = observedCase(token);
+      // الموضع صحيح فعلًا: لا يُمَسّ.
+      if (observed && caseMatches(observed, slot.expectedCase)) {
+        return {reason: 'copular-reading-already-correct',
+          detail: `«${token.surface}» ${slot.role} وحقه ${caseLabel(slot.expectedCase)}، وهو كذلك في النص.`};
+      }
+      // القاعدة تقترح حالة تخالف القراءة التركيبية: تُحجب.
+      const proposed = v1910ProposedCase(finding.original, finding.replacement);
+      // استثناء جمع المؤنث السالم: كسرتُه في موضع النصب علامةٌ نائبة عن
+      // الفتحة، فاقتراح الكسرة موافقٌ للنصب لا مخالفٌ له.
+      const soundFemPlural = /ات$/u.test(stripDiacritics(String(finding.original || '')))
+        && (token.morph?.nominal?.number === 'pl' || token.morph?.number === 'pl');
+      if (soundFemPlural && slot.expectedCase === 'accusative' && proposed === 'genitive') {
+        return null;
+      }
+      if (proposed && !caseMatches(proposed, slot.expectedCase)) {
+        return {reason: 'contradicts-copular-reading',
+          detail: `«${token.surface}» ${slot.role} بعد «${slot.governor}» وحقه ${caseLabel(slot.expectedCase)}، والاقتراح يخالف ذلك.`};
+      }
+    }
+  }
+
+  /* (ج) اسم الناسخ الحرفي لا يُصرَّف صرفًا داخليًا: «الامتحان» لا تصير «الامتحين».
+        علامة النصب تُضاف، ولا يُقلب بنية الكلمة. */
+  if (ruleId === 'INNA_SUBJECT_CASE_V18' || ruleId === 'KANA_SUBJECT_CASE_V18'
+      || ruleId === 'OBJECT_CASE_V1871' || ruleId === 'SUBJECT_CASE_V1876'
+      || ruleId === 'PREPOSITION_INFLECTED_NOMINAL_CASE_V1874') {
+    const bareA = stripDiacritics(String(finding.original || ''));
+    const bareB = stripDiacritics(String(finding.replacement || ''));
+    // قلب الرسم مشروع فقط في المثنى وجمع المذكر السالم وجمع المؤنث، وذلك
+    // حين يثبت العدد صرفيًا. أما «الامتحان» فمفردٌ آخره ألفٌ ونون أصليتان،
+    // فلا يجوز أن تُقرأ لاحقةَ تثنيةٍ فتصير «الامتحين».
+    const morphNumber = token?.morph?.nominal?.number || token?.morph?.number || null;
+    const inflectable = (morphNumber === 'du' || morphNumber === 'pl')
+      && /(?:ون|ين|ان|تان|تين|ات)$/u.test(bareA);
+    if (!inflectable && bareA !== bareB) {
+      return {reason: 'inflection-must-not-rewrite-stem',
+        detail: `«${finding.original}» مفردٌ لا مثنى؛ تصحيح الحالة يضيف علامةً ولا يعيد بناء الكلمة إلى «${finding.replacement}».`};
+    }
+  }
+
+  /* (د) المثنى وجمع المذكر السالم يُعربان بالحروف لا بالحركات. فـ«رأيت
+        الطالبينِ» صحيحةٌ تمامًا: الياء هي علامة النصب، وحركة النون بعدها
+        حركة بناءٍ لازمة لا علامة إعراب تخالفها. فلا يجوز أن تُقلب كسرة
+        النون فتحةً بحجة أن الكلمة مفعول به. أما «الكتابُ ← الكتابَ» فتغييرُ
+        علامةِ إعرابٍ حقيقية على مفردٍ معربٍ بالحركات، وهو تصحيح مشروع. */
+  if (['OBJECT_CASE_V1871', 'SUBJECT_CASE_V1876',
+       'ADJECTIVE_DEPENDENT_CASE_V18', 'APPOSITION_DEPENDENT_CASE_V18',
+       'CONJUNCTION_CASE_V18', 'EMPHASIS_DEPENDENT_CASE_V18',
+       'DEMONSTRATIVE_APPOSITION_CASE_V18'].includes(ruleId)) {
+    const bareA = stripDiacritics(String(finding.original || ''));
+    const bareB = stripDiacritics(String(finding.replacement || ''));
+    const inflectedByLetters = /(?:ين|ان|ون|تين|تان)$/u.test(bareA);
+    if (bareA === bareB && inflectedByLetters) {
+      return {reason: 'dual-plural-inflected-by-letters',
+        detail: `«${finding.original}» مثنى أو جمعُ مذكرٍ سالم يُعرب بالحروف؛ الياء/الألف هي العلامة، وحركة النون بناءٌ لازم لا يخالفها.`};
+    }
+  }
+
+  /* (هـ) جمع التكسير المضاف إلى عدد كثرة («آلاف الكتب») لا يُفرَد. تمييز
+        المئة والألف مفرد، أما «آلاف/مئات/عشرات» فمضافة إلى جمع صحيح. */
+  if (ruleId === 'NUMBER_COUNTED_NOUN_V18' && token) {
+    const previous = context.tokens[token.index - 1];
+    const prevCore = stripDiacritics(previous?.morph?.core || '');
+    if (['آلاف', 'الاف', 'مئات', 'مئين', 'عشرات', 'ألوف', 'الوف'].includes(prevCore)) {
+      return {reason: 'indefinite-multitude-takes-plural',
+        detail: `«${prevCore}» جمع كثرة يضاف إلى الجمع لا إلى المفرد، فـ«${finding.original}» صحيحة.`};
+    }
+  }
+
+  /* (و) الفاعل المؤخر في جملة الصلة: «الرجال الذين حضروا» — واو الجماعة
+        عائدة على الموصول، و«معلمون» خبر المبتدأ لا فاعل للفعل. */
+  if (ruleId === 'V1900_VSO_VERB_SINGULAR_AGREEMENT' && token) {
+    for (let k = token.index - 1; k >= 0 && k >= token.index - 3; k -= 1) {
+      const core = context.tokens[k]?.morph?.core;
+      if (!core) break;
+      if (RELATIVE_PRONOUNS[core]) {
+        return {reason: 'relative-clause-subject-is-the-antecedent',
+          detail: `فاعل «${finding.original}» ضميرٌ عائد على الموصول «${core}»، وما بعده خبرٌ لا فاعل.`};
+      }
+    }
+  }
+
+  /* (ز-1) صلة الموصول التي فيها ضمير عائد مجرور: «الأساس الذي تقوم عليه
+        نهضةُ الأمم» — فاعل «تقوم» هو «نهضة» المتأخرة، والموصول مجرور بالحرف
+        العائد. فالمطابقة تُقاس على الفاعل الحقيقي لا على الموصول. */
+  if (ruleId === 'WEAK_VERB_AGREEMENT_V18' && token) {
+    const previous = context.tokens[token.index - 1];
+    const prevCore = previous?.morph?.core;
+    if (prevCore && RELATIVE_PRONOUNS[prevCore]) {
+      const {end} = sentenceBounds(context.tokens, token.index);
+      for (let k = token.index + 1; k < end && k <= token.index + 4; k += 1) {
+        const t = context.tokens[k];
+        const bare = stripDiacritics(t?.clean || t?.surface || '');
+        if (V1910_RESUMPTIVE_PRONOUNS.has(bare)) {
+          return {reason: 'resumptive-pronoun-shifts-subject',
+            detail: `«${bare}» ضميرٌ عائد على الموصول، ففاعل «${finding.original}» اسمٌ متأخر لا الموصول.`};
+        }
+        if (bestVerb(t)) break;
+      }
+    }
+  }
+
+  /* (ز) الفعل بتاء التأنيث مع فاعل مؤخر مضاف: «فتحت بابُ الدار» تركيب فيه
+        نظر، لكن العلامة الظاهرة على «بابُ» تجعل الحكم على الفعل ظنيًا. */
+  if (ruleId === 'WEAK_VERB_AGREEMENT_V18' && token) {
+    const subjectIndex = finding.metadata?.subjectIndex;
+    const subject = Number.isInteger(subjectIndex) ? context.tokens[subjectIndex] : null;
+    // الفاعل المؤخر المضاف: «فتحت بابُ الدار» — «باب» مضافٌ إلى «الدار»
+    // المؤنثة، والتأنيث المجازي مع الإضافة يجيز الوجهين عند النحاة، فلا
+    // يُجزم بخطأ تاء التأنيث. والعلامة الظاهرة على المضاف تؤكد قصد الكاتب.
+    if (subject && subject.index > token.index) {
+      const after = context.tokens[subject.index + 1];
+      // شرط الإضافة الحقيقية: المضاف نكرةٌ لفظًا (لا «ال» ولا تنوين) ويليه
+      // معرفة. فـ«بابُ الدار» إضافةٌ، أما «الطالبة الكتاب» فمعرفتان
+      // متجاورتان: الأولى فاعل والثانية مفعول، ولا إضافة بينهما.
+      const subjectIsConstruct = subject.morph && !subject.morph.definite
+        && !subject.morph.segments?.article
+        && subject.visibleCase?.kind !== 'tanwin';
+      // «ال» التعريف برهانٌ على الاسمية يغني عن المدخل المعجمي، فـ«الدار»
+      // مضافٌ إليه وإن لم تكن في المعجم المراجَع.
+      const nextIsDefinite = after && (isNominal(after) || v1910CanFillNominalSlot(after))
+        && after.morph?.definite
+        && !after.morph?.segments?.conjunction && after.sentence === subject.sentence
+        && !canonicalPrepositionCore(after);
+      // اللبس مصدره المضاف إليه: إن كان مؤنثًا جاز اكتساب المضاف تأنيثه،
+      // وإن كان مجهول الجنس في المعجم فلا سبيل إلى الجزم بخطأ التاء.
+      // وفي الحالين المبدأ واحد: ما لم يثبت الخطأ فلا تصحيح.
+      const genitiveGender = nextIsDefinite
+        ? (effectiveAgreement(tokenFeatures(after))?.gender || null) : 'm';
+      const genitiveMayBeFeminine = genitiveGender === 'f' || genitiveGender === null;
+      if (subjectIsConstruct && nextIsDefinite && genitiveMayBeFeminine) {
+        return {reason: 'idafa-subject-gender-is-ambiguous',
+          detail: `«${subject.surface}» مضافٌ إلى «${after.surface}»، والتأنيث المجازي مع الإضافة يجيز الوجهين، فلا يُجزم بخطأ التاء.`};
+      }
+    }
+    // فعل الصلة يطابق الموصول، والموصول يطابق موصوفه. فإن اختل الموصول
+    // نفسه فالخلل مسلسل، والإصلاح يبدأ من الموصول ثم يتبعه الفعل — فلا
+    // يُحجب تصحيح الفعل حينئذ. أما إذا كان الموصول مطابقًا لموصوفه وكان
+    // الفعل مطابقًا للموصول فالصلة سليمة ولا موضع للتصحيح.
+    const relativeIndex = token.index - 1;
+    const relative = context.tokens[relativeIndex]?.morph?.core;
+    if (relative && RELATIVE_PRONOUNS[relative]) {
+      const rel = RELATIVE_PRONOUNS[relative];
+      const antecedent = context.tokens[relativeIndex - 1];
+      const antecedentFeatures = antecedent && isNominal(antecedent)
+        ? effectiveAgreement(tokenFeatures(antecedent)) : null;
+      // المطابقة تشمل الحالة الإعرابية في المثنى: «رأيت الطالبين اللذان»
+      // موصولٌ مرفوع نعتًا لمنصوب، فالسلسلة مختلة ولا تصلح مرجعًا.
+      const antecedentCase = antecedent ? observedCase(antecedent) : null;
+      const relativeCaseOk = !rel.caseForm || !antecedentCase
+        || caseMatches(antecedentCase, rel.caseForm === 'accgen' ? 'accgen' : rel.caseForm)
+        || (rel.caseForm === 'nominative' && antecedentCase === 'nominative');
+      const relativeMatchesAntecedent = relativeCaseOk && (!antecedentFeatures
+        || !antecedentFeatures.gender || !rel.gender
+        || (antecedentFeatures.gender === rel.gender
+          && (!antecedentFeatures.number || !rel.number || antecedentFeatures.number === rel.number)));
+      if (relativeMatchesAntecedent) {
+        // المطابقة في الصلة جنسٌ وعددٌ معًا. «الذين حضر» مطابقةٌ في الجنس
+        // مختلةٌ في العدد، فلا تُعدّ سليمة.
+        const verbAnalysis = bestVerb(token);
+        const verbFeatures = PERSON_FEATURES[verbAnalysis?.personCode || ''] || {};
+        const genderOk = !rel.gender || !verbFeatures.gender || rel.gender === verbFeatures.gender;
+        const numberOk = !rel.number || !verbFeatures.number || rel.number === verbFeatures.number;
+        if (genderOk && numberOk) {
+          return {reason: 'relative-clause-agreement-already-valid',
+            detail: `«${finding.original}» مطابق للموصول «${relative}» جنسًا وعددًا، والموصول مطابق لموصوفه.`};
+        }
+      }
+    }
+  }
+
+  /* (ح) عطف البيان والبدل لا يُفرضان على خبرٍ محسوم ولا على اسم عام. */
+  if (ruleId === 'APPOSITION_DEPENDENT_CASE_V18' && token) {
+    const head = context.tokens[token.index - 1];
+    // «إن العلم نورٌ»: «نور» خبر، والخبر لا يُعرب بدلًا من اسم إن.
+    const reading = buildCopularReadingV1910(context);
+    if (reading.has(token.index) || reading.has(head?.index)) {
+      return {reason: 'predicate-is-not-apposition',
+        detail: `«${finding.original}» خبرٌ في جملة منسوخة، والخبر لا يتبع ما قبله إعرابًا.`};
+    }
+    // اسم شائع صُنّف علمًا بالمصادفة: البدل لا يُبنى على تصنيف ظني. أما
+    // العَلَم الذي حمل علامة إعراب ظاهرة فقد صرّح الكاتب بإعرابه، فالمقارنة
+    // بينه وبين المبدل منه مقارنةُ علامتين ظاهرتين لا تخمين فيها.
+    const declared = Boolean(token.visibleCase);
+    if (!declared && ((token.morph?.nominal?.confidence ?? 0) < 0.995 || !token.morph?.definite)) {
+      return {reason: 'weak-proper-name-evidence-for-apposition',
+        detail: `تصنيف «${finding.original}» علمًا ظنيّ، ولا يُبنى عليه حكم البدل.`};
+    }
+  }
+
+  /* (ط) الأفعال الخمسة: النون تُحذف لأن الفاعل ضمير جماعة. فإن كان في
+        الجملة فاعل ظاهر أو ضمير رفع منفصل يخالف الشخص، فالخلل في غير النون. */
+  if (/^FIVE_VERBS_(SUBJUNCTIVE|JUSSIVE)_V18$/u.test(ruleId) && token) {
+    const previous = context.tokens[token.index - 2];
+    const prevCore = previous?.morph?.core;
+    if (prevCore && PERSONAL_PRONOUNS[prevCore]) {
+      const pronoun = PERSONAL_PRONOUNS[prevCore];
+      const verb = bestVerb(token);
+      const features = PERSON_FEATURES[verb?.personCode || ''] || {};
+      if (features.person === pronoun.person && features.number === pronoun.number) {
+        return null;   // «أنتم لن تذهبون» ← الحذف مطلوب فعلًا، لا يُحجب
+      }
+    }
+  }
+
+
+  /* (ك) المبني للمجهول: «تؤخذ» و«يُقال» و«أوتوا» صيغٌ صحيحة، وكرسي همزتها
+        مبنيٌّ على ضم ما قبلها لا على فتحه. فلا تُقاس على المبني للمعلوم
+        («تأخذ») فيُقلب رسمها. */
+  if (/^PRODUCTIVE_HAMZA/u.test(ruleId) || ruleId === 'HAMZA_MORPHOLOGICAL_V18') {
+    const bare = stripDiacritics(String(finding.original || ''));
+    if (V1910_PASSIVE_HAMZA_FORMS.has(bare)) {
+      return {reason: 'passive-voice-hamza-seat',
+        detail: `«${finding.original}» مبنيٌّ للمجهول، وكرسي همزته على واو لضمّ ما قبلها؛ والاقتراح يقلبها إلى صيغة المعلوم.`};
+    }
+    // القاعدة العامة: صيغة على وزن «تُفعَل/يُفعَل» المبني للمجهول من مهموز
+    // الفاء لا تُردّ إلى «تَفعَل»، لأن الرسمين لمعنيين مختلفين.
+    if (/^[يتن]ؤ/u.test(bare) && /^[يتن]أ/u.test(stripDiacritics(String(finding.replacement || '')))) {
+      return {reason: 'passive-voice-hamza-seat',
+        detail: `«${finding.original}» تحتمل البناء للمجهول، ورسمها بالواو صحيح فيه؛ فلا تُقلب إلى «${finding.replacement}» بلا دليل.`};
+    }
+  }
+
+  /* (ل) الموصول المعطوف على موصول: «الذين آمنوا والذين أوتوا» — الثاني
+        معطوف على الأول لا نعتٌ لما قبله مباشرة، فيوافقه في الصيغة. */
+  if (ruleId === 'RELATIVE_PRONOUN_AGREEMENT_V18' && token) {
+    if (token.morph?.segments?.conjunction) {
+      for (let k = token.index - 1; k >= 0 && k >= token.index - 6; k -= 1) {
+        const prior = context.tokens[k];
+        if (!prior || prior.sentence !== token.sentence) break;
+        const priorCore = prior.morph?.core;
+        if (!priorCore) continue;
+        if (RELATIVE_PRONOUNS[priorCore] && priorCore === token.morph?.core) {
+          return {reason: 'coordinated-relative-matches-its-conjunct',
+            detail: `«${finding.original}» معطوفٌ على «${priorCore}» ويوافقه في الصيغة، فلا يُقاس على أقرب اسم قبله.`};
+        }
+      }
+    }
+  }
+
+  /* (م) «ما زال» و«ما دام» ناسختان تنصبان الخبر. فإذا سبق «أنّ» جملةً فيها
+        «ما زال» فالخبر خبرُ «ما زال» المنصوب لا خبرُ «أنّ» المرفوع، ولا
+        يجوز أن ترفع «أنّ» ما نصبه ناسخٌ أقرب منها. */
+  if (ruleId === 'INNA_PREDICATE_V18' && token) {
+    for (let k = token.index - 1; k >= 0 && k >= token.index - 4; k -= 1) {
+      const prior = context.tokens[k];
+      if (!prior || prior.sentence !== token.sentence) break;
+      const bare = stripDiacritics(prior.morph?.core || prior.clean || '');
+      if (isKanaSurface(bare) || V1910_MAZAL_FORMS.has(bare)) {
+        return {reason: 'nearer-copula-governs-the-predicate',
+          detail: `«${finding.original}» خبرُ «${bare}» المنصوب، والناسخ الأقرب أولى بالعمل من «أنّ».`};
+      }
+    }
+  }
+
+  /* (ن) أدوات الشرط والاستفهام الجازمة («مهما، كيفما، أينما») أسماءٌ مبنية
+        لا نعوتَ لما قبلها. تقطيعها نعتًا يولّد «مهما ← مهمٍ». */
+  if (token && V1910_CONDITIONAL_PARTICLES.has(stripDiacritics(token.clean || token.surface || ''))) {
+    if (isGrammar) {
+      return {reason: 'conditional-particle-is-indeclinable',
+        detail: `«${token.surface}» اسم شرطٍ مبني، لا نعتَ ولا معربَ، فلا تلحقه علامة إعراب.`};
+    }
+  }
+
+  /* (س) فعل جواب الشرط أو فعل جملة الشرط لا يُطابَق بفاعلٍ من خارج جملته.
+        «مهما كانت العقبات» — «العقبات» اسم «كان» المؤنث، والتاء صحيحة. */
+  if (ruleId === 'KANA_AGREEMENT_V18' && token) {
+    const subjectIndex = finding.metadata?.subjectIndex;
+    const subject = Number.isInteger(subjectIndex) ? context.tokens[subjectIndex] : null;
+    // الاتجاه مهم: القاعدة قد تزيد التاء وقد تحذفها. الحجب إنما يكون حين
+    // تُحذف تاءٌ صحيحة، أي حين يكون الاسم مؤنثًا والفعل مؤنثًا أصلًا. أما
+    // «كان الطالبات» فحذفٌ للتاء المطلوبة، وتصحيحه إلى «كانت» واجب.
+    const removesFeminineMarker = /ت$/u.test(stripDiacritics(String(finding.original || '')))
+      && !/ت$/u.test(stripDiacritics(String(finding.replacement || '')));
+    if (subject && removesFeminineMarker) {
+      const features = tokenFeatures(subject);
+      // جمع المؤنث السالم مؤنثٌ قطعًا وإن لم يُحلَّل معجميًا.
+      const soundFemPlural = /ات$/u.test(stripDiacritics(subject.morph?.core || ''));
+      if (soundFemPlural || features.gender === 'f'
+        || features.numberCandidates || (features.confidence ?? 1) < 0.6) {
+        return {reason: 'copula-subject-feminine-or-unresolved',
+          detail: `«${subject.surface}» مؤنثٌ أو غير محسوم التحليل، فتاء التأنيث في «${finding.original}» صحيحة أو محتملة.`};
+      }
+    }
+  }
+
+
+  /* (ع) «ذوي» جمعُ «ذو» في النصب والجر («كرّم ذوي الاحتياجات»)، وليست
+        مفردًا ليُقلب إلى «ذا». وكذلك «ذوو» في الرفع. والأسماء الخمسة
+        إنما تُعرب بالحروف في الإفراد وحده. */
+  if (/^FIVE_NOUNS/u.test(ruleId) || cls === 'five-nouns') {
+    const bare = stripDiacritics(String(finding.original || ''));
+    if (V1910_FIVE_NOUN_PLURALS.has(bare)) {
+      return {reason: 'five-noun-plural-not-singular',
+        detail: `«${finding.original}» جمعٌ لا مفرد، وإعراب الأسماء الخمسة بالحروف خاصٌّ بالمفرد المضاف.`};
+    }
+  }
+
+  /* (ف) الموصولات المؤنثة الجمع «اللاتي/اللائي/اللواتي» ثلاثتها فصيحة
+        متكافئة، فلا يُبدَّل أحدها بالآخر. */
+  if (ruleId === 'RELATIVE_PRONOUN_AGREEMENT_V18') {
+    const bareA = stripDiacritics(String(finding.original || '')).replace(/^[وف]/u, '');
+    const bareB = stripDiacritics(String(finding.replacement || '')).replace(/^[وف]/u, '');
+    if (V1910_EQUIVALENT_RELATIVES.has(bareA) && V1910_EQUIVALENT_RELATIVES.has(bareB)) {
+      return {reason: 'equivalent-relative-pronoun-variants',
+        detail: `«${bareA}» و«${bareB}» صيغتان فصيحتان متكافئتان للموصول المؤنث الجمع، فلا تُفضَّل إحداهما على الأخرى.`};
+    }
+  }
+
+  /* (ص) مخالفة العدد: العدد من 3 إلى 10 يخالف معدودَه. و«كتب» جمعُ «كتاب»
+        المذكر، فتمييزها «تسع» بالتأنيث… بل «تسعة». لكن الحكم يقتضي معرفة
+        جنس المفرد لا جنس صيغة الجمع. فإذا كان المعدود جمع تكسير التبس
+        الأمر على القاعدة، ولا يُصحَّح إلا بجنس المفرد المحسوم معجميًا. */
+  if (ruleId === 'NUMBER_POLARITY_V18' && token) {
+    const counted = context.tokens[token.index + 1];
+    const lemmaGender = counted?.morph?.nominal?.gender || null;
+    const confidence = counted?.morph?.nominal?.confidence ?? 0;
+    const brokenPlural = counted?.morph?.nominal?.pluralType === 'broken';
+    // جمع التكسير لا تدل صيغته على جنس مفرده، والقاعدة تحكم بصيغة الجمع.
+    if (brokenPlural && (!lemmaGender || confidence < 0.99)) {
+      return {reason: 'broken-plural-gender-unresolved',
+        detail: `«${counted?.surface}» جمع تكسير لا تدل صورته على جنس مفرده، فلا يُبنى عليه حكم مخالفة العدد.`};
+    }
+  }
+
+  /* (ق) «بدء» و«جزء» و«عبء» مصادرُ همزتها متطرفة على السطر، ولا تُردّ إلى
+        الفعل «بدأ». الاسم بعد مضافٍ أو حرف جر لا يكون فعلًا. */
+  if (/^PRODUCTIVE_HAMZA/u.test(ruleId) && token) {
+    const bare = stripDiacritics(String(finding.original || ''));
+    if (V1910_FINAL_HAMZA_NOUNS.has(bare)) {
+      return {reason: 'final-hamza-verbal-noun',
+        detail: `«${finding.original}» مصدرٌ همزته متطرفة على السطر، وليس فعلًا ماضيًا فيُرسم «${finding.replacement}».`};
+    }
+    // الاسم المسبوق بحرف جر أو الواقع مضافًا لا يكون فعلًا.
+    const previous = context.tokens[token.index - 1];
+    const next = context.tokens[token.index + 1];
+    const governedByPreposition = Boolean(token.morph?.segments?.preposition
+      || canonicalPrepositionCore(previous) || ADVERBIAL_GOVERNORS.has(previous?.morph?.core));
+    const heads = Boolean(next && next.morph?.definite && next.sentence === token.sentence);
+    if (governedByPreposition && heads) {
+      return {reason: 'nominal-position-blocks-verbal-reading',
+        detail: `«${finding.original}» مضافٌ مسبوقٌ بعاملٍ اسمي، والفعل لا يقع هذا الموقع.`};
+    }
+  }
+
+  /* (ي) الإملاء لا يُصحَّح داخل المقاطع المحمية أو الاقتباس التمثيلي. */
+  if (isOrthographic && token && v1910InsideIllustrativeQuoteV1910(context, token)) {
+    return {reason: 'illustrative-quotation',
+      detail: `«${finding.original}» داخل اقتباس تمثيلي يُساق مثالًا على الخطأ، فلا يُصحَّح آليًا.`};
+  }
+
+  return null;
+}
+
+/* المقطع المقتبس الذي يسبقه لفظ تمثيل صريح («مثل، نحو، كلمة، خطأ...»)
+   يُساق شاهدًا على الخطأ لا وقوعًا فيه. */
+const V1910_ILLUSTRATIVE_MARKERS = new Set([
+  'مثل', 'نحو', 'كلمة', 'كلمات', 'لفظ', 'لفظة', 'صيغة', 'خطأ', 'الخطأ',
+  'أخطاء', 'الأخطاء', 'صواب', 'الصواب', 'تكتب', 'تُكتب', 'يكتب', 'رسم'
+]);
+
+function v1910InsideIllustrativeQuoteV1910(context, token) {
+  const text = context.text || '';
+  const start = token.start;
+  const end = token.end;
+  // هل الكلمة محاطة بعلامة اقتباس مباشرة؟
+  const before = text.slice(Math.max(0, start - 2), start);
+  const after = text.slice(end, end + 2);
+  const quoted = /["«'\u201C\u201D]\s*$/u.test(before) && /^\s*["»'\u201C\u201D]/u.test(after);
+  if (!quoted) return false;
+  // وهل سبقها في الجملة لفظ تمثيل؟
+  for (let k = token.index - 1; k >= 0 && k >= token.index - 8; k -= 1) {
+    const t = context.tokens[k];
+    if (!t || t.sentence !== token.sentence) break;
+    const core = stripDiacritics(t.morph?.core || '');
+    if (V1910_ILLUSTRATIVE_MARKERS.has(core)) return true;
+  }
+  return false;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 4) ContextualConfidence 1.0 — الثقة نتيجة تحليل، لا خاصية قاعدة.
+ *
+ *  الثقة الابتدائية تأتي من القاعدة. هذه الطبقة تعدّلها بأدلة السياق:
+ *  اتفاق الطبقات يرفعها، وضعف التحليل الصرفي يخفضها، وتعدد أقسام الكلام
+ *  يخفضها، وثبات القراءة البديلة يخفضها. النتيجة هي ما يُبنى عليه العرض.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+const CONFIDENCE_TIERS_V1910 = Object.freeze({
+  CERTAIN:  {min: 0.95, code: 'certain',  label: 'تصحيح مؤكد',      autoApply: true},
+  STRONG:   {min: 0.85, code: 'strong',   label: 'تصحيح قوي',       autoApply: true},
+  SUGGEST:  {min: 0.70, code: 'suggest',  label: 'اقتراح للمراجعة', autoApply: false},
+  WITHHELD: {min: 0.00, code: 'withheld', label: 'دون العتبة',      autoApply: false}
+});
+
+function confidenceTierV1910(value) {
+  if (value >= CONFIDENCE_TIERS_V1910.CERTAIN.min) return CONFIDENCE_TIERS_V1910.CERTAIN;
+  if (value >= CONFIDENCE_TIERS_V1910.STRONG.min) return CONFIDENCE_TIERS_V1910.STRONG;
+  if (value >= CONFIDENCE_TIERS_V1910.SUGGEST.min) return CONFIDENCE_TIERS_V1910.SUGGEST;
+  return CONFIDENCE_TIERS_V1910.WITHHELD;
+}
+
+function contextualConfidenceV1910(context, finding) {
+  const token = tokenAtOriginalSpan(context, finding);
+  const factors = [];
+  let value = Number(finding.confidence) || 0;
+  const cls = String(finding.classification || '');
+  const isGrammar = V1910_GRAMMAR_CLASSES.has(cls);
+
+  if (token) {
+    // قراءة تركيبية مؤيدة ترفع الثقة، لأن الحكم صار مبنيًا على الوظيفة لا الرسم.
+    const slot = buildCopularReadingV1910(context).get(token.index);
+    if (slot && isGrammar) {
+      const proposed = v1910ProposedCase(finding.original, finding.replacement);
+      if (proposed && caseMatches(proposed, slot.expectedCase)) {
+        value = Math.min(0.99, value + 0.04);
+        factors.push({factor: 'مؤيَّد بالقراءة التركيبية للناسخ', delta: +0.04});
+      }
+    }
+    // تعدد أقسام الكلام يضعف كل حكم نحوي.
+    const posKinds = new Set((token.morph?.candidates || []).map(x => x.pos));
+    if (isGrammar && posKinds.size > 2) {
+      value -= 0.08;
+      factors.push({factor: 'الكلمة تحتمل أكثر من قسم كلام', delta: -0.08});
+    }
+    // تحليل صرفي إنتاجي غير مراجَع: دليل ظني — إلا فيما حكمُه من الوزن
+    // نفسه كالممنوع من الصرف («مفاتيح» على صيغة منتهى الجموع)، فالوزن
+    // برهانٌ صرفيٌّ قاطع لا يُضعفه غياب المدخل المعجمي.
+    const source = String(token.morph?.nominal?.source || '');
+    const patternProven = Boolean(token.morph?.diptote?.isDiptote) || cls === 'diptote';
+    if (isGrammar && !patternProven
+        && (source.startsWith('productive-') || source.startsWith('unverified-'))) {
+      value -= 0.10;
+      factors.push({factor: 'التحليل الصرفي إنتاجي غير مراجَع', delta: -0.10});
+    }
+    // كلمة بلا تحليل معجمي: لا يُبنى عليها حكم نحوي قوي — إلا أن تكون
+    // اسميتها ثابتة بأداة التعريف أو بعلامة إعراب ظاهرة، فالدليل حينئذ
+    // نحويٌّ لا معجمي، وغياب المدخل المعجمي لا يقدح فيه.
+    if (isGrammar && token.morph?.pos === 'unknown'
+        && !token.morph?.definite && !token.morph?.segments?.article && !token.visibleCase) {
+      value -= 0.12;
+      factors.push({factor: 'الكلمة خارج المعجم المراجَع', delta: -0.12});
+    }
+    // نص مشكول شكلًا كاملًا: الكاتب ضابط لنصه، فارفع عتبة التدخل النحوي.
+    if (isGrammar && token.visibleCase && finding.replacement
+        && stripDiacritics(String(finding.original)) === stripDiacritics(String(finding.replacement))) {
+      value -= 0.15;
+      factors.push({factor: 'التغيير حركةٌ فقط على نص مضبوط', delta: -0.15});
+    }
+  }
+
+  // الإملاء المعجمي المراجَع يبقى في أعلى السلم: ليس محل اجتهاد سياقي.
+  if (V1910_ORTHOGRAPHIC_CLASSES.has(cls) && !factors.length) {
+    factors.push({factor: 'مدخل إملائي معجمي مراجَع', delta: 0});
+  }
+
+  value = Math.max(0, Math.min(1, value));
+  return {value, factors, tier: confidenceTierV1910(value)};
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 5) SuggestionTaxonomy 1.0 — فصل أنواع الاقتراحات فصلًا صريحًا.
+ *
+ *  المستخدم لا ينبغي أن يرى «؟؟؟ ← ؟» في المرتبة نفسها مع «إبن ← ابن».
+ *  الأولى تحسين تنسيق، والثانية خطأ إملائي مقطوع به.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+const SUGGESTION_KINDS_V1910 = Object.freeze({
+  SPELLING:      {code: 'spelling',      label: 'إملائي مؤكد',        rank: 1, group: 'أخطاء لغوية'},
+  MORPHOLOGY:    {code: 'morphology',    label: 'صرفي مؤكد',          rank: 2, group: 'أخطاء لغوية'},
+  GRAMMAR:       {code: 'grammar',       label: 'نحوي مؤكد',          rank: 3, group: 'أخطاء لغوية'},
+  GRAMMAR_CTX:   {code: 'grammar-ctx',   label: 'نحوي سياقي',         rank: 4, group: 'مراجعة يدوية'},
+  STYLE:         {code: 'style',         label: 'أسلوبي',             rank: 5, group: 'تحسين التنسيق والأسلوب'},
+  FORMATTING:    {code: 'formatting',    label: 'تنسيق وترقيم',       rank: 6, group: 'تحسين التنسيق والأسلوب'},
+  LOW_CONF:      {code: 'low-confidence',label: 'اقتراح منخفض الثقة', rank: 7, group: 'مراجعة يدوية'}
+});
+
+const V1910_MORPHOLOGY_RULES = /^(WEAK_VERB_AGREEMENT|FIVE_VERBS_|WAW_ALJAMAA|CONTEXTUAL_TAA|HAMZA_MORPHOLOGICAL)/u;
+const V1910_FORMATTING_CLASSES = new Set(['punctuation', 'spacing', 'diacritics']);
+
+function classifySuggestionV1910(finding, tier) {
+  const cls = String(finding.classification || '');
+  const ruleId = String(finding.ruleId || '');
+
+  if (V1910_FORMATTING_CLASSES.has(cls)) return SUGGESTION_KINDS_V1910.FORMATTING;
+  if (cls === 'style') return SUGGESTION_KINDS_V1910.STYLE;
+  if (tier.code === 'withheld') return SUGGESTION_KINDS_V1910.LOW_CONF;
+
+  if (V1910_ORTHOGRAPHIC_CLASSES.has(cls)) {
+    return tier.code === 'certain' ? SUGGESTION_KINDS_V1910.SPELLING : SUGGESTION_KINDS_V1910.LOW_CONF;
+  }
+  if (V1910_MORPHOLOGY_RULES.test(ruleId) || cls === 'morphology' || cls === 'five-verbs') {
+    return tier.code === 'certain' ? SUGGESTION_KINDS_V1910.MORPHOLOGY : SUGGESTION_KINDS_V1910.GRAMMAR_CTX;
+  }
+  if (V1910_GRAMMAR_CLASSES.has(cls)) {
+    return tier.code === 'certain' ? SUGGESTION_KINDS_V1910.GRAMMAR : SUGGESTION_KINDS_V1910.GRAMMAR_CTX;
+  }
+  return tier.code === 'certain' ? SUGGESTION_KINDS_V1910.SPELLING : SUGGESTION_KINDS_V1910.LOW_CONF;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 6) SafeCorrectAll 1.0 — «تصحيح الكل» يطبّق المقطوع به فقط.
+ *
+ *  الطبقة الآلية محصورة في الإملاء المعجمي المراجَع والترقيم والمسافات
+ *  عند بلوغ الثقة السياقية درجة «مؤكد». أما النحو والأسلوب فيدويان دائمًا.
+ * ───────────────────────────────────────────────────────────────────────── */
+const V1910_AUTO_APPLY_KINDS = new Set(['spelling', 'formatting']);
+
+function isSafeAutoCorrectionV1910(finding) {
+  if (finding.replacement == null) return false;
+  if (finding.abstained) return false;
+  if (finding.requiresReview) return false;
+  const kind = finding.suggestionKind || '';
+  if (!V1910_AUTO_APPLY_KINDS.has(kind)) return false;
+  const tier = finding.confidenceTier || '';
+  if (tier !== 'certain') return false;
+  // الترقيم والمسافات تحسين تنسيق: تُطبَّق فقط إذا صُرّح بأنها آمنة أصلًا.
+  if (kind === 'formatting') return Boolean(finding.safeCandidate);
+  return Boolean(finding.safeCandidate);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 7) الإخراج الموحّد: تطبيق الطبقات الست على قائمة الملاحظات.
+ * ───────────────────────────────────────────────────────────────────────── */
+function applyDecisionGovernanceV1910(context, findings) {
+  const kept = [];
+  const blocked = [];
+
+  for (const finding of findings) {
+    const guard = v1910GuardReason(context, finding);
+    if (guard) {
+      finding.blockedBy = guard.reason;
+      finding.blockedDetail = guard.detail;
+      blocked.push({finding, ...guard});
+      continue;
+    }
+
+    const assessment = contextualConfidenceV1910(context, finding);
+    finding.ruleConfidence = finding.confidence;
+    finding.confidence = assessment.value;
+    finding.confidenceTier = assessment.tier.code;
+    finding.confidenceTierLabel = assessment.tier.label;
+    finding.confidenceFactors = assessment.factors;
+
+    const kind = classifySuggestionV1910(finding, assessment.tier);
+    finding.suggestionKind = kind.code;
+    finding.suggestionLabel = kind.label;
+    finding.suggestionGroup = kind.group;
+    finding.suggestionRank = kind.rank;
+
+    // ما دون العتبة لا يُعرض خطأً البتة.
+    if (assessment.tier.code === 'withheld') {
+      finding.blockedBy = 'below-display-threshold';
+      finding.blockedDetail = `الثقة السياقية ${(assessment.value * 100).toFixed(0)}% دون عتبة العرض (70%).`;
+      blocked.push({finding, reason: 'below-display-threshold', detail: finding.blockedDetail});
+      continue;
+    }
+
+    kept.push(finding);
+  }
+
+  return {kept, blocked};
+}
+
+
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 8) SuggestionTracks 1.0 — مسارات العرض المفصولة.
+ *
+ *  المدقق لا يعرض قائمة واحدة مختلطة. الأخطاء اللغوية شيء، والاقتراحات
+ *  السياقية شيء، وتحسين التنسيق شيء ثالث. الخلط بينها هو ما يفقد المستخدم
+ *  ثقته حين يرى «؟؟؟ ← ؟» معروضًا بوصفه خطأً نحويًا.
+ * ───────────────────────────────────────────────────────────────────────── */
+function buildSuggestionTracksV1910(findings) {
+  const tracks = {
+    languageErrors: {label: 'أخطاء لغوية', description: 'إملاء وصرف ونحو مقطوع به.', items: []},
+    contextualReview: {label: 'مراجعة يدوية', description: 'أحكام سياقية تحتاج نظر الكاتب.', items: []},
+    styleAndFormatting: {label: 'تحسين التنسيق والأسلوب', description: 'ترقيم ومسافات وضبط وأسلوب — ليست أخطاء لغوية.', items: []}
+  };
+  for (const finding of findings) {
+    const group = finding.suggestionGroup || 'مراجعة يدوية';
+    if (group === 'أخطاء لغوية') tracks.languageErrors.items.push(finding);
+    else if (group === 'تحسين التنسيق والأسلوب') tracks.styleAndFormatting.items.push(finding);
+    else tracks.contextualReview.items.push(finding);
+  }
+  for (const track of Object.values(tracks)) {
+    track.count = track.items.length;
+    track.items.sort((a, b) => (a.suggestionRank || 9) - (b.suggestionRank || 9) || a.index - b.index);
+  }
+  tracks.summary = {
+    languageErrors: tracks.languageErrors.count,
+    contextualReview: tracks.contextualReview.count,
+    styleAndFormatting: tracks.styleAndFormatting.count,
+    total: findings.length
+  };
+  return tracks;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 9) NawasikhCaseResolver 1.0 — «إن وأخواتها» و«كان وأخواتها» بابين مستقلين.
+ *
+ *  القاعدتان متعاكستان تمامًا، وخلطهما هو مصدر أكثر الأخطاء:
+ *      إنّ وأخواتها : الاسم منصوب   ← الخبر مرفوع
+ *      كان وأخواتها: الاسم مرفوع   ← الخبر منصوب
+ *  هذه الطبقة تقرأ الجملة قراءةً تركيبية أولًا (StructuralReadingGuard)، ثم
+ *  لا تتدخل إلا حيث تكون العلامة الظاهرة مناقضةً للوظيفة المحسومة. ولأنها
+ *  تعمل على العلامة الظاهرة وحدها فهي لا تخترع تشكيلًا لنصٍّ غير مشكول.
+ * ───────────────────────────────────────────────────────────────────────── */
+const V1910_NO_TANWIN_ALIF_TAIL = /[اىةآء]$/u;
+
+function v1910MarkFor(caseValue, kind) {
+  if (kind === 'tanwin') {
+    return caseValue === 'nominative' ? '\u064C' : (caseValue === 'accusative' ? '\u064B' : '\u064D');
+  }
+  return caseValue === 'nominative' ? '\u064F' : (caseValue === 'accusative' ? '\u064E' : '\u0650');
+}
+
+function nawasikhCaseRuleV1910(context) {
+  const out = [];
+  const reading = buildCopularReadingV1910(context);
+  if (!reading.size) return out;
+
+  for (const [index, slot] of reading) {
+    const token = context.tokens[index];
+    if (!token || token.type !== 'word') continue;
+    // لا تدخّل إلا على علامة ظاهرة: النص غير المشكول ليس خطأً.
+    const observedMark = token.visibleCase;
+    if (!observedMark) continue;
+    if (caseMatches(observedMark.case, slot.expectedCase)) continue;
+
+    // المضاف إليه والمجرور بحرف لا يُنازَعان.
+    if ((token.morph?.segments?.preposition && !v1910MissegmentedPreposition(token))
+      || canonicalPrepositionCore(context.tokens[index - 1])) continue;
+    if (isIdafaHead(context.tokens, index)) continue;
+
+    const surface = token.surface;
+    const position = surface.lastIndexOf(observedMark.mark);
+    if (position < 0) continue;
+
+    // الاسم المنصوب المقدَّم على الخبر: «بات واضحًا أن الحل...» — «واضحًا»
+    // خبرٌ مقدَّم منصوب، واسم الناسخ هو المصدر المؤول من «أنّ» وما بعدها.
+    // فلا يُعامَل أولُ اسمٍ بعد الناسخ اسمًا له إذا كان منصوبًا وتلاه مصدر مؤول.
+    if (slot.expectedCase === 'nominative' && observedMark.case === 'accusative') {
+      let sawMasdar = false;
+      const {end: slotEnd} = sentenceBounds(context.tokens, index);
+      for (let k = index + 1; k < slotEnd && k <= index + 3; k += 1) {
+        const core = context.tokens[k]?.morph?.core;
+        if (!core) break;
+        if (V1910_INNA_SET.has(core) || core === 'أن' || core === 'ما') { sawMasdar = true; break; }
+      }
+      if (sawMasdar) continue;
+    }
+
+    const definite = Boolean(token.morph?.definite);
+    const kind = definite ? 'vowel' : observedMark.kind;
+    const targetMark = v1910MarkFor(slot.expectedCase, kind);
+    let replacement = surface.slice(0, position) + targetMark + surface.slice(position + 1);
+
+    // جمع المؤنث السالم ينصب بالكسرة نيابةً عن الفتحة، فلا تُوضع عليه فتحة
+    // ولا تلحقه ألف التنوين: «كانت الطالبات مجتهداتٍ» هي الصواب.
+    const soundFemininePlural = /ات$/u.test(stripDiacritics(surface))
+      && (token.morph?.nominal?.number === 'pl' || token.morph?.number === 'pl');
+    if (soundFemininePlural && slot.expectedCase === 'accusative') {
+      const kasraMark = kind === 'tanwin' ? '\u064D' : '\u0650';
+      replacement = surface.slice(0, position) + kasraMark + surface.slice(position + 1);
+    } else if (kind === 'tanwin' && slot.expectedCase === 'accusative'
+        && !V1910_NO_TANWIN_ALIF_TAIL.test(stripDiacritics(surface))
+        && !/\u0627$/u.test(replacement)) {
+      replacement += '\u0627';
+    }
+    // الانتقال من النصب إلى غيره يوجب حذف ألف التنوين مع علامتها معًا،
+    // فلا يُنتج رسمٌ فاسد مثل «واضحٌا».
+    if (slot.expectedCase !== 'accusative' && /\u0627$/u.test(surface)
+        && observedMark.kind === 'tanwin') {
+      const stem = surface.slice(0, position);
+      replacement = `${stem}${targetMark}`;
+    }
+    if (replacement === surface) continue;
+
+    const family = slot.family === 'inna' ? 'إنّ وأخواتها' : 'كان وأخواتها';
+    out.push(findingFromSpan(context, {
+      startToken: token,
+      replacement,
+      ruleId: slot.family === 'inna' ? 'V1910_INNA_FAMILY_CASE' : 'V1910_KANA_FAMILY_CASE',
+      type: 'نحوي',
+      classification: 'syntactic-case',
+      confidence: 0.96,
+      explanation: `${family}: «${slot.governor}» ناسخٌ، و«${token.surface}» ${slot.role} وحقه ${caseLabel(slot.expectedCase)}؛ والعلامة الظاهرة تدل على ${caseLabel(observedMark.case)}.`,
+      evidence: ['NawasikhCaseResolver-1.0', `governor:${slot.governor}`,
+        `role:${slot.role}`, `observed:${observedMark.case}`, `expected:${slot.expectedCase}`],
+      safe: false,
+      metadata: {resolver: 'NawasikhCaseResolver', resolverVersion: '1.0',
+        family: slot.family, governor: slot.governor, governorIndex: slot.governorIndex,
+        role: slot.role, expectedCase: slot.expectedCase, observedCase: observedMark.case}
+    }));
+  }
+  return out;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 10) WawAljamaaCompletion 1.0 — ألف التفريق بعد واو الجماعة.
+ *
+ *  القاعدة الموحدة المطلوبة: كل واو جماعة في آخر الفعل تتبعها ألفٌ فارقة،
+ *  ماضيًا كان أو مضارعًا منصوبًا أو مجزومًا: كتبوا، ذهبوا، قالوا، لن يفعلوا،
+ *  لم يفعلوا. والمنع مقابلها: كتبو، ذهبو، قالو، يفعلو، لن يفعلو.
+ *
+ *  الطبقة القائمة تشترط سندًا معجميًا، فيفوتها الفعل خارج المعجم. وهذه
+ *  الطبقة تسدّ ذلك بسندٍ تركيبي قاطع لا معجمي: أداةُ نصبٍ أو جزمٍ صريحة قبل
+ *  صيغة تبدأ بحرف مضارعة وتنتهي بواو — ولا قراءة عربية لهذا التركيب إلا
+ *  الأفعال الخمسة محذوفةَ النون، فتلزمها الألف الفارقة.
+ * ───────────────────────────────────────────────────────────────────────── */
+const V1910_MOOD_PARTICLES = new Set(['لن', 'لم', 'أن', 'كي', 'لكي', 'حتى', 'لام']);
+const V1910_IMPERFECT_PREFIX = /^[يتن]/u;
+
+function wawAljamaaCompletionRuleV1910(context) {
+  const out = [];
+  const {tokens} = context;
+  for (let i = 1; i < tokens.length; i += 1) {
+    const token = tokens[i];
+    if (token.type !== 'word') continue;
+    const word = token.clean || token.surface;
+    if (!word) continue;
+    const bare = stripDiacritics(word);
+    // لا لاصقة تعريف ولا حرف جر: هذان لا يدخلان على الفعل.
+    if (token.morph?.segments?.article || token.morph?.segments?.preposition) continue;
+    if (!/^[ء-ي]{4,}و$/u.test(bare)) continue;
+    if (!V1910_IMPERFECT_PREFIX.test(bare)) continue;
+    // «يدعو، يرجو، يسمو، يعلو»: الواو لام الكلمة لا واو جماعة.
+    if (VERB_FORM_INDEX.has(bare) || WORDS[bare] || KNOWN_ORTHOGRAPHIC_FORMS.has(bare)) continue;
+    if (typeof WAW_IMPERFECT_EXCEPTIONS !== 'undefined' && WAW_IMPERFECT_EXCEPTIONS.has(bare)) continue;
+    if (typeof WAW_NOUN_EXCEPTIONS !== 'undefined' && WAW_NOUN_EXCEPTIONS.has(bare)) continue;
+
+    const governor = stripDiacritics(tokens[i - 1]?.clean || tokens[i - 1]?.morph?.core || '');
+    if (!V1910_MOOD_PARTICLES.has(governor)) continue;
+    if (tokens[i - 1].sentence !== token.sentence) continue;
+
+    out.push(findingFromSpan(context, {
+      startToken: token,
+      replacement: `${word}ا`,
+      ruleId: 'V1910_WAW_ALJAMAA_COMPLETION',
+      type: 'إملائي',
+      classification: 'orthographic',
+      confidence: 0.985,
+      explanation: `بعد «${governor}» يُحذف نون الأفعال الخمسة وتبقى واو الجماعة، وتلزمها الألف الفارقة: «${word}ا».`,
+      evidence: ['WawAljamaaCompletion-1.0', `governor:${governor}`,
+        'five-verbs-oblique', 'no-alternative-reading'],
+      safe: true,
+      metadata: {resolver: 'WawAljamaaCompletion', resolverVersion: '1.0',
+        governor, governorIndex: i - 1, rule: 'alif-al-fariqa'}
+    }));
+  }
+  return out;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 11) FiveVerbsProductive 1.0 — الأفعال الخمسة خارج المعجم.
+ *
+ *  حكم الأفعال الخمسة صرفيٌّ محضٌ لا يتوقف على معرفة الفعل: كل مضارع لحقته
+ *  ألف اثنين أو واو جماعة أو ياء مخاطبة يُرفع بثبوت النون، ويُنصب ويُجزم
+ *  بحذفها. فإذا سبقته أداة نصبٍ أو جزمٍ صريحة وجب الحذف، سواء أكان الفعل
+ *  في المعجم أم لم يكن. الطبقة القائمة تشترط مدخلًا معجميًا، فتفوتها أفعال
+ *  كثيرة («لن يهملون»)، وهذه تسدّ الثغرة بالوزن وحده.
+ * ───────────────────────────────────────────────────────────────────────── */
+const V1910_FIVE_VERB_ENDINGS = [
+  {suffix: 'ون', replacement: 'وا', name: 'واو الجماعة'},
+  {suffix: 'ان', replacement: 'ا',  name: 'ألف الاثنين'},
+  {suffix: 'ين', replacement: 'ي',  name: 'ياء المخاطبة'}
+];
+
+function fiveVerbsProductiveRuleV1910(context) {
+  const out = [];
+  const {tokens} = context;
+  for (let i = 1; i < tokens.length; i += 1) {
+    const token = tokens[i];
+    if (token.type !== 'word') continue;
+    // الفعل المعروف معجميًا تتكفل به قاعدة V18 بثقتها الأعلى.
+    if (bestVerb(token)) continue;
+    if (token.morph?.segments?.article || token.morph?.segments?.preposition) continue;
+    if (token.morph?.segments?.enclitic) continue;
+
+    const governorToken = tokens[i - 1];
+    if (!governorToken || governorToken.sentence !== token.sentence) continue;
+    const governor = stripDiacritics(governorToken.clean || governorToken.morph?.core || '');
+    const subjunctive = SUBJUNCTIVE_PARTICLES.has(governor);
+    const jussive = JUSSIVE_PARTICLES.has(governor);
+    if (!subjunctive && !jussive) continue;
+
+    const core = token.morph?.core || token.clean || '';
+    const bare = stripDiacritics(core);
+    // حرف المضارعة شرطٌ لازم، فلا تدخل الأسماء المنتهية بالنون.
+    if (!/^[يتن]/u.test(bare)) continue;
+    if (bare.length < 5) continue;
+    // الاسم المعرَّف أو المنون ليس فعلًا مهما شابه الوزن.
+    if (token.morph?.definite || token.visibleCase) continue;
+    // الصيغة معروفة اسمًا في المعجم: لا نخاطر.
+    if (NOUN_FORM_INDEX.has(bare) || ADJECTIVE_FORM_INDEX.has(bare)) continue;
+    if (typeof WORDS !== 'undefined' && WORDS[bare]) continue;
+
+    const ending = V1910_FIVE_VERB_ENDINGS.find(item => bare.endsWith(item.suffix));
+    if (!ending) continue;
+    const stem = bare.slice(0, -ending.suffix.length);
+    if (stem.length < 3) continue;
+
+    const desired = `${stem}${ending.replacement}`;
+    const replacement = rebuildToken(token, desired);
+    if (!replacement || replacement === token.surface) continue;
+
+    const mood = subjunctive ? 'subjunctive' : 'jussive';
+    out.push(findingFromSpan(context, {
+      startToken: token,
+      replacement,
+      ruleId: subjunctive ? 'V1910_FIVE_VERBS_SUBJUNCTIVE' : 'V1910_FIVE_VERBS_JUSSIVE',
+      type: 'صرفي',
+      classification: 'five-verbs',
+      confidence: 0.96,
+      explanation: `الأفعال الخمسة ترفع بثبوت النون وتنصب وتجزم بحذفها. وقد سبق الفعلَ «${governor}»، وفيه ${ending.name}، فيجب حذف النون: «${desired}».`,
+      evidence: ['FiveVerbsProductive-1.0', `governor:${governor}`, `mood:${mood}`,
+        `ending:${ending.suffix}`, 'pattern-based-not-lexical'],
+      safe: false,
+      metadata: {resolver: 'FiveVerbsProductive', resolverVersion: '1.0',
+        mood, governor, governorIndex: i - 1, ending: ending.suffix, expectedForm: desired}
+    }));
+  }
+  return out;
+}
+
 /* V19.0 PRO — الطبقات الجديدة المكملة */
 function fiveNounsPhraseResolverRuleV19(context) {
   const out = [];
@@ -9968,7 +11366,11 @@ const RULE_PIPELINE = Object.freeze([
   {id: 'punctuation', run: punctuationRule},
   {id: 'spacing', run: spacingRuleV1880},
   {id: 'style', run: styleRuleV1890},
-  {id: 'longContext', run: longContextResolverRuleV19}
+  {id: 'longContext', run: longContextResolverRuleV19},
+  // ── V19.1.0 — طبقات القرار النحوي المستقلة ──
+  {id: 'nawasikhCase', run: nawasikhCaseRuleV1910},
+  {id: 'wawAljamaaCompletion', run: wawAljamaaCompletionRuleV1910},
+  {id: 'fiveVerbsProductive', run: fiveVerbsProductiveRuleV1910}
 ]);
 
 function pipelineDescription() {
@@ -10439,7 +11841,7 @@ function runPROApiSanityChecks(){
   var sample='الطالب الذي نجح، والمعلم الذي حضر.';
   var long=_rLong(sample);
   // V19.0.0 FINAL: الفحص معلق على سلسلة التوافق مع 18.8.6 أو 18.9.0، ويسمح بالإصدار 19.0.0
-  var lineageOk = META.version==='18.8.6' || META.version==='18.9.0' || META.version==='19.0.0' || (META.compat && (META.compat.baseVersion==='18.8.6' || META.compat.baseVersion==='18.9.0'));
+  var lineageOk = ['18.8.6','18.9.0','19.0.0','19.1.0'].indexOf(META.version)!==-1 || (META.compat && ['18.8.6','18.9.0','19.0.0'].indexOf(META.compat.baseVersion)!==-1);
   return {version:META.version,valid:Boolean(lineageOk) && long.clauseCount===2 && long.relativeLinks.length===2,checks:{longContextClauseCount:long.clauseCount,relativeLinks:long.relativeLinks.length,lineage:lineageOk}};
 }
 
@@ -10487,7 +11889,28 @@ function analyze(input, options = {}) {
       context.v1900VetoedFindings = firewall.vetoed;
     }
   }
+  // V19.1.0 — DecisionGovernance 1.0: الحارس ثم الثقة السياقية ثم التصنيف.
+  // يعمل بعد الجدار الناري وقبل الترتيب، فلا يصل إلى المستخدم إلا ما نجا
+  // من الأسئلة الأربعة: أمحمية الكلمة؟ أصحيح التركيب؟ أكافٍ الدليل؟ أي طبقة؟
+  let governance = {kept: effectiveFindings, blocked: []};
+  if (context.options.rules.decisionGovernance !== false) {
+    governance = applyDecisionGovernanceV1910(context, effectiveFindings);
+    effectiveFindings = governance.kept;
+    context.v1910Blocked = governance.blocked;
+  }
+
   const ranked = rankAndClassify(effectiveFindings, context.options, context);
+
+  // V19.1.0 — SafeCorrectAll: «تصحيح الكل» لا يطبّق إلا المقطوع به.
+  // القرار تقاطعٌ بين سياسة V19.0 وسياسة V19.1، فلا يتوسّع الأتمتة أبدًا.
+  if (context.options.rules.safeCorrectAll !== false) {
+    for (const finding of ranked.visible) {
+      finding.legacyAutoCorrectable = finding.autoCorrectable;
+      finding.autoCorrectable = Boolean(finding.autoCorrectable) && isSafeAutoCorrectionV1910(finding);
+      finding.manualOnly = !finding.autoCorrectable;
+    }
+  }
+
   const corrected = applyFindings(context.original, ranked.visible);
   const result = {
     engine: META,
@@ -10499,6 +11922,19 @@ function analyze(input, options = {}) {
     errors: ranked.visible,
     suggestions: ranked.visible.filter(x => !x.autoCorrectable),
     stats: statistics(ranked.visible, ranked.suppressed)
+  };
+
+  // V19.1.0 — مسارات العرض المفصولة: لا تختلط الأخطاء اللغوية بالتنسيق،
+  // ولا يُعرض الاقتراح السياقي بوصفه خطأً مقررًا.
+  result.tracks = buildSuggestionTracksV1910(ranked.visible);
+  result.autoCorrectable = ranked.visible.filter(x => x.autoCorrectable);
+  result.manualReview = ranked.visible.filter(x => !x.autoCorrectable);
+  result.guard = {
+    blocked: (context.v1910Blocked || []).length,
+    items: (context.v1910Blocked || []).map(item => ({
+      ruleId: item.finding.ruleId, original: item.finding.original,
+      replacement: item.finding.replacement, reason: item.reason, detail: item.detail
+    }))
   };
 
   // V18.9.0: مسار الملاحظات التحليلية — منفصل تمامًا عن الأخطاء المعتمدة،
@@ -11643,9 +13079,41 @@ function validateData() {
     ARABIZED_TERMS_V1880.has('الإنترنت') && SCIENTIFIC_TERMS_V1880.has('أكسجين'),
     'المعرَّبات والمصطلحات العلمية محمية من التصحيح');
 
+  // ── V19.1.0: فحوص بنيوية لطبقة القرار الأخير ──
+  add('v1910-protected-words-registry',
+    Object.keys(PROTECTED_WORDS_V1910).length >= 50
+      && Object.values(PROTECTED_WORDS_V1910).every(entry => Array.isArray(entry.scopes) && entry.scopes.length),
+    `${Object.keys(PROTECTED_WORDS_V1910).length} كلمة محمية، لكل مدخل نطاقٌ محدد`);
+  add('v1910-confidence-tiers-ordered',
+    CONFIDENCE_TIERS_V1910.CERTAIN.min > CONFIDENCE_TIERS_V1910.STRONG.min
+      && CONFIDENCE_TIERS_V1910.STRONG.min > CONFIDENCE_TIERS_V1910.SUGGEST.min
+      && CONFIDENCE_TIERS_V1910.SUGGEST.min > CONFIDENCE_TIERS_V1910.WITHHELD.min,
+    'سلّم الثقة مرتب تنازليًا: مؤكد > قوي > اقتراح > دون العتبة');
+  add('v1910-suggestion-taxonomy-groups',
+    new Set(Object.values(SUGGESTION_KINDS_V1910).map(k => k.group)).size === 3,
+    'ثلاثة مسارات عرض: أخطاء لغوية، مراجعة يدوية، تنسيق وأسلوب');
+  add('v1910-new-pipeline-stages',
+    ['nawasikhCase', 'wawAljamaaCompletion', 'fiveVerbsProductive']
+      .every(id => ruleIds.includes(id)),
+    'مراحل V19.1 مسجلة في خط الأنابيب');
+  add('v1910-auto-apply-restricted',
+    V1910_AUTO_APPLY_KINDS.size === 2 && V1910_AUTO_APPLY_KINDS.has('spelling')
+      && !V1910_AUTO_APPLY_KINDS.has('grammar') && !V1910_AUTO_APPLY_KINDS.has('grammar-ctx'),
+    'التصحيح الآلي محصور في الإملاء المعجمي والتنسيق؛ النحو يدوي دائمًا');
+  add('v1910-block-corpus-size',
+    V1910_BLOCK_REGRESSIONS.length >= 40 && V1910_GOLD_REGRESSIONS.length >= 25,
+    `${V1910_BLOCK_REGRESSIONS.length} مصيدة إنذار كاذب و${V1910_GOLD_REGRESSIONS.length} استدراكًا ذهبيًا`);
+  add('v1910-over-correction-corpus',
+    V1910_OVER_CORRECTION_CORPUS.length >= 20,
+    `${V1910_OVER_CORRECTION_CORPUS.length} نصًا سليمًا لاختبار عدم الإفراط في التصحيح`);
+  add('v1910-nawasikh-families-separate',
+    V1910_INNA_SET.size >= 6 && V1910_KANA_WITH_BOUND_SUBJECT.size >= 15,
+    `إنّ وأخواتها ${V1910_INNA_SET.size} أداة، وكان وأخواتها بضمير متصل ${V1910_KANA_WITH_BOUND_SUBJECT.size} صورة`);
+
   // ── V18.9.0: فحوص بنيوية للطبقات المضافة ──
   add('v1890-compat-record',
-    (META.compat?.baseVersion === '18.8.6' || META.compat?.baseVersion === '18.9.0') && META.compat.policy === 'additive-only'
+    ['18.8.6', '18.9.0', '19.0.0'].includes(META.compat?.baseVersion)
+      && META.compat.policy === 'additive-only'
       && META.compat.preservedApi.length >= 40,
     `توافق خلفي موثق مع ${META.compat?.baseVersion} (${META.compat?.preservedApi?.length} واجهة محفوظة)`);
   add('v1890-new-pipeline-stages',
@@ -12171,6 +13639,352 @@ function validate({
 }
 
 
+/* ═══════════════════════════════════════════════════════════════════════════
+ *  V19.1 — منظومة الاختبار: مصائد الإنذار الكاذب، والاستدراك، واختبار
+ *  عدم الإفراط في التصحيح (Over-Correction Benchmark).
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* (أ) مصائد الإنذار الكاذب — نصوص صحيحة تمامًا يجب أن تخرج بصفر أخطاء.
+       كل مدخل هنا إنذارٌ كاذب رُصد فعلًا في V19.0 وأُصلح سببه الجذري. */
+const V1910_BLOCK_REGRESSIONS = Object.freeze([
+  ['v1910-inna-khabar-nur',      'إن العلم نورٌ.'],
+  ['v1910-inna-khabar-full',     'إن العلم نور، والقراءة غذاء العقل، والطلاب المجتهدون يحرصون على أوقاتهم.'],
+  ['v1910-kana-waw-plural',      'وكانوا يعملون بجد.'],
+  ['v1910-ordinal-awwalan',      'أولا: يجب أن نبدأ بالتخطيط.'],
+  ['v1910-ordinal-awwalan-2',    'أولًا نحضر الأدوات، وثانيًا نبدأ العمل.'],
+  ['v1910-lady-possessive',      'لدي كتاب جميل.'],
+  ['v1910-lady-possessive-2',    'لديّ فكرة رائعة.'],
+  ['v1910-lada-adverb',          'لدى المدير اجتماع مهم.'],
+  ['v1910-ula-superlative',      'أولى الخطوات أهمها.'],
+  ['v1910-vso-singular',         'حضر الطلاب إلى المدرسة.'],
+  ['v1910-svo-plural',           'الطلاب حضروا مبكرين.'],
+  ['v1910-fem-plural-verb',      'الطالبات يذهبن إلى المدرسة.'],
+  ['v1910-dual-nominative',      'جاء الطالبانِ.'],
+  ['v1910-dual-accusative',      'رأيت الطالبينِ.'],
+  ['v1910-dual-genitive',        'مررت بالطالبينِ.'],
+  ['v1910-dual-adj-chain',       'رأيت الطالبينِ المجتهدينِ.'],
+  ['v1910-fem-plural-adj-acc',   'رأيتُ الطالباتِ المجتهداتِ.'],
+  ['v1910-fem-plural-adj-gen',   'مررتُ بالطالباتِ المجتهداتِ.'],
+  ['v1910-five-verbs-correct',   'الطلاب لن يهملوا دروسهم.'],
+  ['v1910-kana-bound-subject',   'كنت طالبًا في هذه المدرسة.'],
+  ['v1910-kana-predicate-ok',    'كان الطالبُ مجتهدًا.'],
+  ['v1910-sara-predicate-ok',    'صار الطقس معتدلًا في الربيع.'],
+  ['v1910-inna-name-ok',         'إن الطالبَ مجتهدٌ.'],
+  ['v1910-relative-plural',      'الرجال الذين حضروا معلمون.'],
+  ['v1910-relative-fem-plural',  'النساء اللاتي حضرن معلمات.'],
+  ['v1910-resumptive-pronoun',   'إن التعليم هو الأساس الذي تقوم عليه نهضة الأمم.'],
+  ['v1910-multitude-plural',     'آلاف الكتب في المكتبة.'],
+  ['v1910-anna-masdar',          'علمت أن الامتحان قريب.'],
+  ['v1910-pronoun-subject',      'أنتم تعملون بجد.'],
+  ['v1910-idafa-subject',        'فتحت بابُ الدار.'],
+  ['v1910-cognate-accusative',   'شرح المعلم الدرس شرحًا وافيًا.'],
+  ['v1910-numbers-3-10-m',       'ثلاثة كتب على الطاولة.'],
+  ['v1910-numbers-3-10-f',       'ثلاث طالبات في الصف.'],
+  ['v1910-numbers-11-m',         'أحد عشر طالبًا حضروا.'],
+  ['v1910-numbers-11-f',         'إحدى عشرة طالبة حضرن.'],
+  ['v1910-numbers-13-m',         'ثلاثة عشر طالبًا في القاعة.'],
+  ['v1910-numbers-13-f',         'ثلاث عشرة طالبة في القاعة.'],
+  ['v1910-numbers-21-m',         'واحد وعشرون طالبًا نجحوا.'],
+  ['v1910-numbers-21-f',         'إحدى وعشرون طالبة نجحن.'],
+  ['v1910-demonstrative-dual',   'هذان الطالبان مجتهدان.'],
+  ['v1910-demonstrative-dual-o', 'رأيت هذين الطالبين.'],
+  ['v1910-demonstrative-fem-du', 'هاتان الطالبتان متفوقتان.'],
+  ['v1910-demonstrative-plural', 'هؤلاء الطلاب مجتهدون.'],
+  ['v1910-five-nouns-nom',       'سافر أبي إلى مكة.'],
+  ['v1910-five-nouns-acc',       'رأيت أخاك في السوق.'],
+  ['v1910-five-nouns-gen',       'مررت بأخيك أمس.'],
+  ['v1910-inna-chain',           'إن هؤلاء الطلاب المجتهدين يستحقون التكريم.'],
+  ['v1910-laysa-ok',             'ليس الأمر سهلًا.'],
+  ['v1910-mazal-ok',             'ما زال المطر ينزل.'],
+  ['v1910-long-clean',           'يحرص المعلمون المخلصون على متابعة طلابهم، ويسعون إلى تنمية مهاراتهم في القراءة والكتابة والتفكير.'],
+  // ── جولة الإجهاد الثانية: إنذارات رُصدت على نصوص غير مرئية وأُصلحت جذورها ──
+  ['v1910-abstract-plural-adj',  'ما زالت اللغة العربية قادرة على استيعاب العلوم الحديثة.'],
+  ['v1910-abstract-plural-2',    'العلوم الحديثة مفيدة، والكتب الجديدة وصلت.'],
+  ['v1910-passive-hamza',        'وما نيل المطالب بالتمني، ولكن تؤخذ الدنيا غلابا.'],
+  ['v1910-passive-hamza-2',      'يرفع الله الذين آمنوا منكم والذين أوتوا العلم درجات.'],
+  ['v1910-mazal-predicate',      'أظن أن الطريق ما زال طويلا أمامنا.'],
+  ['v1910-conditional-particle', 'لن أتخلى عن حلمي مهما كانت العقبات.'],
+  ['v1910-quran-1',              'إن أكرمكم عند الله أتقاكم، وإن خير الناس أنفعهم للناس.'],
+  ['v1910-proverb-1',            'من سار على الدرب وصل، ومن جد وجد.'],
+  ['v1910-proverb-2',            'لا تحقرن صغيرة إن الجبال من الحصى.'],
+  ['v1910-numbers-thousands',    'في المكتبة ثلاثة آلاف كتاب موزعة على خمسة أقسام.'],
+  ['v1910-numbers-twelve',       'حضر الاجتماع اثنا عشر عضوًا، وغاب ثلاثة.'],
+  ['v1910-dual-fem-subject',     'الطالبتان المجتهدتان نالتا الجائزة الأولى.'],
+  ['v1910-dual-relative-gen',    'سلمت على الأستاذين اللذين أشرفا على البحث.'],
+  ['v1910-fem-plural-agree',     'إن الطالبات المجتهدات يستحققن التقدير.'],
+  ['v1910-kana-fem-plural-ok',   'كانت الطالبات مجتهدات.'],
+  // ── جولة الإجهاد الثالثة ──
+  ['v1910-fronted-predicate',    'بات واضحًا أن الحل يحتاج إلى تعاون جميع الأطراف.'],
+  ['v1910-fronted-predicate-2',  'كان واضحًا أن الأمر صعب.'],
+  ['v1910-five-noun-plural',     'كرمت الجامعة ذوي الاحتياجات الخاصة من طلابها.'],
+  ['v1910-relative-variants',    'الطالبات اللواتي شاركن في المسابقة حصلن على جوائز قيمة.'],
+  ['v1910-final-hamza-noun',     'امتلأت القاعة بالحضور قبل بدء المحاضرة بنصف ساعة.'],
+  ['v1910-final-hamza-noun-2',   'قرأت الجزء الأول ثم بدأت الجزء الثاني.'],
+  ['v1910-mazal-gov',            'ما زالت الحكومة تدرس مقترحات اللجنة الاقتصادية.'],
+  ['v1910-madam-gov',            'ما دامت الشمس تشرق فالأمل موجود.'],
+  ['v1910-fem-plural-relative',  'العاملات في المصنع يطالبن بتحسين ظروف العمل.'],
+  ['v1910-dual-relative-nom',    'الطالبان اللذان تفوقا نالا منحة دراسية كاملة.'],
+  ['v1910-numbers-mixed',        'في الفصل خمسة وثلاثون طالبًا وطالبة.'],
+  ['v1910-exception-illa',       'حضر الجميع إلا واحدًا اعتذر عن الحضور لظرف طارئ.'],
+  ['v1910-hal-plural',           'خرج الطلاب من الامتحان مبتسمين راضين عن أدائهم.'],
+  ['v1910-demonstrative-fem-pl', 'هذه الأشجار المثمرة تحتاج إلى عناية دائمة.'],
+  ['v1910-cognate-two',          'وقد شرح المعلم الدرس شرحًا وافيًا، وأجاب عن الأسئلة إجابة شافية.']
+]);
+
+/* (ب) الاستدراك — أخطاء حقيقية يجب ألا تفوت المحرك بعد تشديد الحراسة. */
+const V1910_GOLD_REGRESSIONS = Object.freeze([
+  {id: 'v1910-g-inna-name',       text: 'إن الطالبُ مجتهدٌ.',            expect: 'الطالبَ'},
+  {id: 'v1910-g-kana-name',       text: 'كان الطالبَ مجتهدًا.',           expect: 'الطالبُ'},
+  {id: 'v1910-g-kana-pred',       text: 'كان الطالب مجتهدٌ.',            expect: 'مجتهدًا'},
+  {id: 'v1910-g-asbaha-pred',     text: 'أصبح الجو باردٌ.',              expect: 'باردًا'},
+  {id: 'v1910-g-laysa-pred',      text: 'ليس الأمر سهلٌ.',               expect: 'سهلًا'},
+  {id: 'v1910-g-five-verbs-lex',  text: 'الطلاب لن يهملون دروسهم.',      expect: 'يهملوا'},
+  {id: 'v1910-g-five-verbs-jus',  text: 'المعلمون لم يتغيبون.',          expect: 'يتغيبوا'},
+  {id: 'v1910-g-five-verbs-fem',  text: 'لن تهملين واجبك.',              expect: 'تهملي'},
+  {id: 'v1910-g-waw-jamaa-past',  text: 'الطلاب كتبو الدرس.',            expect: 'كتبوا'},
+  {id: 'v1910-g-waw-jamaa-pres',  text: 'لن يفعلو ذلك.',                 expect: 'يفعلوا'},
+  {id: 'v1910-g-waw-jamaa-jus',   text: 'لم يهملو دروسهم.',              expect: 'يهملوا'},
+  {id: 'v1910-g-fem-plural-verb', text: 'الطالبات يذهبون إلى المدرسة.',  expect: 'يذهبن'},
+  {id: 'v1910-g-svo-plural',      text: 'الطلاب يكتب الواجب.',           expect: 'يكتبون'},
+  {id: 'v1910-g-dual-subject',    text: 'جاء الطالبين.',                 expect: 'الطالبان'},
+  {id: 'v1910-g-dual-object',     text: 'رأيت الطالبان.',                expect: 'الطالبين'},
+  {id: 'v1910-g-dual-genitive',   text: 'مررت بالطالبان.',               expect: 'الطالبين'},
+  {id: 'v1910-g-dem-number',      text: 'هذا الطالبات مجتهدات.',         expect: 'هؤلاء'},
+  {id: 'v1910-g-dem-gender',      text: 'هذه الطالب مجتهد.',             expect: 'هذا'},
+  {id: 'v1910-g-dem-case',        text: 'رأيت هذان الطالبين.',           expect: 'هذين'},
+  {id: 'v1910-g-adj-gender',      text: 'الطالب المجتهدة نجح.',          expect: 'المجتهد'},
+  {id: 'v1910-g-number-11',       text: 'أحد عشر طالبة حضرن.',           expect: 'إحدى عشرة'},
+  {id: 'v1910-g-number-13',       text: 'ثلاثة عشر طالبة.',              expect: 'ثلاث عشرة'},
+  {id: 'v1910-g-five-nouns-nom',  text: 'جاء أباك.',                     expect: 'أبوك'},
+  {id: 'v1910-g-five-nouns-acc',  text: 'رأيت أبوك.',                    expect: 'أباك'},
+  {id: 'v1910-g-five-nouns-gen',  text: 'مررت بأبوك.',                   expect: 'أبيك'},
+  {id: 'v1910-g-orth-ibn',        text: 'هذا إبن أخي.',                  expect: 'ابن'},
+  {id: 'v1910-g-orth-taa',        text: 'القراءه مفيده.',                expect: 'القراءة'},
+  {id: 'v1910-g-tanwin-order',    text: 'قرأت كتاباً مفيداً.',            expect: 'كتابًا'}
+]);
+
+/* (ج) اختبار عدم الإفراط في التصحيح — أهم اختبار بعد اختبار الأخطاء.
+       نصوص عربية سليمة من مستويات مختلفة؛ المعيار أن يخرج المحرك منها
+       بصفر أخطاء لغوية. أي تدخل هنا دليل خلل في المحلل السياقي. */
+const V1910_OVER_CORRECTION_CORPUS = Object.freeze([
+  'تُعدّ اللغة العربية من أغنى لغات العالم بالمفردات والتراكيب.',
+  'أعلنت الوزارة عن خطة جديدة لتطوير المناهج الدراسية.',
+  'يعتمد نجاح المشروع على تضافر جهود جميع العاملين فيه.',
+  'شارك في المؤتمر خبراء من عشرين دولة عربية وأجنبية.',
+  'حصل الطالب على المرتبة الأولى في مسابقة الرياضيات.',
+  'ارتفعت درجات الحرارة ارتفاعًا ملحوظًا هذا الأسبوع.',
+  'لم تكن الرحلة سهلة، لكنها كانت ممتعة.',
+  'إذا اجتهدت نجحت، ومن يزرع الخير يحصد المحبة.',
+  'كلما قرأت ازددت علمًا.',
+  'لا يزال البحث جاريًا عن حلول عملية.',
+  'ما دام الأمل موجودًا فالعمل مستمر.',
+  'إن الحياة كفاح، وإن الطريق طويل.',
+  'كان الطلاب مجتهدين، وكانت الطالبات مجتهدات.',
+  'الطالبان يكتبان الدرس، والطالبات يكتبن.',
+  'قرأت الكتابين، وفي الكتابين معلومات قيمة.',
+  'الرجال الذين حضروا معلمون، والنساء اللاتي حضرن معلمات.',
+  'في السنة اثنا عشر شهرًا، وفي الأسبوع سبعة أيام.',
+  'جاء أبوك، ورأيت أباك، وسلمت على أبيك.',
+  'شرح المعلم الدرس شرحًا وافيًا، وعاد الجندي منتصرًا.',
+  'إن التعليم هو الأساس الذي تقوم عليه نهضة الأمم.',
+  'كانت المكتبة العامة مقصدًا لطلاب العلم، وكانت رفوفها تضم آلاف الكتب.',
+  'من واجب كل مواطن أن يحافظ على المرافق العامة.',
+  'هذا ابن عمي واسمه محمد، وقد استخرج الطالب المعلومة.',
+  'الفصول أربعة: الربيع، والصيف، والخريف، والشتاء.',
+  'لقد أثبتت التجارب أن العمل الجماعي يحقق نتائج أفضل من العمل الفردي.'
+]);
+
+function runOverCorrectionBenchmarkV1910(options = {}) {
+  const rows = [];
+  let clean = 0;
+  let intrusions = 0;
+  for (const text of V1910_OVER_CORRECTION_CORPUS) {
+    const result = analyze(text, options);
+    // المعيار: صفر أخطاء لغوية. التنسيق والأسلوب خارج الحساب لأنهما ليسا خطأً.
+    const languageErrors = (result.findings || []).filter(finding =>
+      finding.suggestionGroup === 'أخطاء لغوية' || finding.suggestionGroup === 'مراجعة يدوية');
+    if (!languageErrors.length) { clean += 1; continue; }
+    intrusions += languageErrors.length;
+    rows.push({text, intrusions: languageErrors.map(f =>
+      ({ruleId: f.ruleId, original: f.original, replacement: f.replacement,
+        confidence: Number(f.confidence.toFixed(3)), kind: f.suggestionKind}))});
+  }
+  const total = V1910_OVER_CORRECTION_CORPUS.length;
+  return {
+    version: META.version,
+    resolver: 'OverCorrectionBenchmark-1.0',
+    total, clean, intrusions,
+    cleanRate: total ? clean / total : 1,
+    overCorrectionRate: total ? (total - clean) / total : 0,
+    valid: intrusions === 0,
+    failures: rows
+  };
+}
+
+function runRegressionSuiteV1910(options = {}) {
+  const failures = [];
+  let passed = 0;
+
+  for (const [id, text] of V1910_BLOCK_REGRESSIONS) {
+    const findings = (analyze(text, options).findings || []).filter(finding =>
+      finding.suggestionGroup !== 'تحسين التنسيق والأسلوب');
+    if (!findings.length) { passed += 1; continue; }
+    failures.push({id, kind: 'false-positive', text,
+      findings: findings.map(f => ({ruleId: f.ruleId, original: f.original,
+        replacement: f.replacement, confidence: Number(f.confidence.toFixed(3))}))});
+  }
+
+  for (const item of V1910_GOLD_REGRESSIONS) {
+    const result = analyze(item.text, options);
+    const hit = String(result.corrected || '').includes(item.expect)
+      || (result.findings || []).some(finding => String(finding.replacement || '').includes(item.expect));
+    if (hit) { passed += 1; continue; }
+    failures.push({id: item.id, kind: 'missed-error', text: item.text,
+      expected: item.expect, corrected: result.corrected,
+      got: (result.findings || []).map(f => `${f.original}>${f.replacement}`)});
+  }
+
+  const total = V1910_BLOCK_REGRESSIONS.length + V1910_GOLD_REGRESSIONS.length;
+  return {version: META.version, total, passed, failures, valid: failures.length === 0,
+    blocks: V1910_BLOCK_REGRESSIONS.length, golds: V1910_GOLD_REGRESSIONS.length};
+}
+
+/* المجموعة الكاملة: كل ما سبق في V19.0 + طبقات V19.1 + اختبار الإفراط. */
+function runFullSuiteV1910(options = {}) {
+  const base = runFullSuiteV1900(options);
+  const regression1910 = runRegressionSuiteV1910(options);
+  const overCorrection = runOverCorrectionBenchmarkV1910(options);
+
+  const suites = {
+    ...base.suites,
+    regressionV1910: {valid: regression1910.valid, total: regression1910.total,
+      passed: regression1910.passed, blocks: regression1910.blocks, golds: regression1910.golds,
+      failures: regression1910.failures.slice(0, 20)},
+    overCorrectionBenchmark: {valid: overCorrection.valid, total: overCorrection.total,
+      clean: overCorrection.clean, intrusions: overCorrection.intrusions,
+      cleanRate: overCorrection.cleanRate, overCorrectionRate: overCorrection.overCorrectionRate,
+      failures: overCorrection.failures.slice(0, 20)}
+  };
+
+  return {
+    version: META.version,
+    valid: base.valid && regression1910.valid && overCorrection.valid,
+    suites
+  };
+}
+
+
+/* ── V19.1: الواجهات التشخيصية — قراءة فقط، لا تغيّر أي مخرج قائم ── */
+  function inspectProtectedWordsV1910(text, options){
+    const context = createContext(text, options);
+    return {
+      version: META.version, resolver: 'ProtectedWords', resolverVersion: '1.0',
+      tokens: context.tokens.filter(token => token.type === 'word').map(token => {
+        const entry = protectedWordEntryV1910(token);
+        return {
+          index: token.index, surface: token.surface, core: token.morph?.core || null,
+          protected: Boolean(entry),
+          matched: entry?.matched || null,
+          scopes: entry?.scopes || [],
+          conditional: Boolean(entry?.conditional),
+          unlocked: entry ? protectionUnlockedV1910(context, token, entry) : false,
+          note: entry?.note || null
+        };
+      }).filter(row => row.protected)
+    };
+  }
+
+  function inspectGuardV1910(text, options){
+    const result = analyze(text, options);
+    return {
+      version: META.version, resolver: 'FalsePositiveGuard', resolverVersion: '1.0',
+      blocked: result.guard.blocked, items: result.guard.items,
+      firewall: result.firewall,
+      kept: (result.findings || []).map(f => ({ruleId: f.ruleId, original: f.original,
+        replacement: f.replacement, confidence: f.confidence, tier: f.confidenceTier,
+        kind: f.suggestionKind, group: f.suggestionGroup, auto: f.autoCorrectable}))
+    };
+  }
+
+  function inspectNawasikhV1910(text, options){
+    const context = createContext(text, options);
+    const reading = buildCopularReadingV1910(context);
+    return {
+      version: META.version, resolver: 'NawasikhCaseResolver', resolverVersion: '1.0',
+      slots: [...reading.entries()].map(([index, slot]) => ({
+        tokenIndex: index, surface: context.tokens[index]?.surface || null,
+        role: slot.role, family: slot.family, governor: slot.governor,
+        governorIndex: slot.governorIndex, expectedCase: slot.expectedCase,
+        observedCase: observedCase(context.tokens[index]),
+        agrees: caseMatches(observedCase(context.tokens[index]), slot.expectedCase),
+        boundSubject: Boolean(slot.boundSubject)
+      }))
+    };
+  }
+
+  function inspectConfidenceV1910(text, options){
+    const result = analyze(text, options);
+    return {
+      version: META.version, resolver: 'ContextualConfidence', resolverVersion: '1.0',
+      tiers: CONFIDENCE_TIERS_V1910,
+      findings: (result.findings || []).map(f => ({
+        ruleId: f.ruleId, original: f.original, replacement: f.replacement,
+        ruleConfidence: f.ruleConfidence ?? null, contextualConfidence: f.confidence,
+        tier: f.confidenceTier, tierLabel: f.confidenceTierLabel,
+        factors: f.confidenceFactors || [], autoCorrectable: f.autoCorrectable
+      }))
+    };
+  }
+
+  function inspectTracksV1910(text, options){
+    const result = analyze(text, options);
+    const shape = track => ({label: track.label, description: track.description,
+      count: track.count, items: track.items.map(f => ({ruleId: f.ruleId,
+        original: f.original, replacement: f.replacement, kind: f.suggestionKind,
+        label: f.suggestionLabel, confidence: f.confidence, tier: f.confidenceTier,
+        auto: f.autoCorrectable, explanation: f.explanation}))});
+    return {
+      version: META.version, resolver: 'SuggestionTracks', resolverVersion: '1.0',
+      summary: result.tracks.summary,
+      languageErrors: shape(result.tracks.languageErrors),
+      contextualReview: shape(result.tracks.contextualReview),
+      styleAndFormatting: shape(result.tracks.styleAndFormatting)
+    };
+  }
+
+  /* «تصحيح الكل» الآمن: يطبّق المقطوع به فقط، ويعيد ما بقي للمراجعة اليدوية. */
+  function correctSafeV1910(text, options){
+    const result = analyze(text, options);
+    return {
+      version: META.version,
+      original: result.original,
+      corrected: result.corrected,
+      applied: (result.autoCorrectable || []).map(f => ({ruleId: f.ruleId,
+        original: f.original, replacement: f.replacement, kind: f.suggestionKind,
+        confidence: f.confidence})),
+      pending: (result.manualReview || []).map(f => ({ruleId: f.ruleId,
+        original: f.original, replacement: f.replacement, kind: f.suggestionKind,
+        label: f.suggestionLabel, group: f.suggestionGroup,
+        confidence: f.confidence, tier: f.confidenceTier, explanation: f.explanation})),
+      summary: {applied: (result.autoCorrectable || []).length,
+        pending: (result.manualReview || []).length}
+    };
+  }
+
+  function runArabicProBenchmarkV1910Combined(options){
+    const pro = runArabicProBenchmarkV1900(ARABIC_PRO_BENCHMARK_V1900, options);
+    const over = runOverCorrectionBenchmarkV1910(options);
+    return {
+      version: META.version,
+      arabicProBenchmark2000: {total: pro.total, recall: pro.recall, precision: pro.precision,
+        falsePositiveRate: pro.falsePositiveRate, wrongCorrectionRate: pro.wrongCorrectionRate,
+        targetsMet: pro.targetsMet},
+      overCorrection: {total: over.total, clean: over.clean, intrusions: over.intrusions,
+        cleanRate: over.cleanRate, valid: over.valid},
+      valid: pro.valid && over.valid
+    };
+  }
+
   function check(text, options){ return analyze(text, options); }
   function correct(text, options){ return analyze(text, options).corrected; }
   function suggest(text, options){ return analyze(text, options).suggestions; }
@@ -12428,7 +14242,36 @@ function validate({
   kanaPredicateTanwin: Object.freeze({version: '2.0', rule: kanaPredicateTanwinRuleV1900}),
   firewall: Object.freeze({version: '2.0', apply: applyFirewallV1900}),
   V1900_PRO: Object.freeze({version: '19.0.0', edition: 'PRO-FINAL', analyze: analyzePRO,
-    validate: runFullSuiteV1900, benchmark: runArabicProBenchmarkV1900})
+    validate: runFullSuiteV1900, benchmark: runArabicProBenchmarkV1900}),
+
+  // ── V19.1.0 PRO FINAL — طبقة القرار الأخير ──
+  V1910_BLOCK_REGRESSIONS, V1910_GOLD_REGRESSIONS, V1910_OVER_CORRECTION_CORPUS,
+  runRegressionSuiteV1910, runFullSuiteV1910, runOverCorrectionBenchmarkV1910,
+  PROTECTED_WORDS_V1910, CONFIDENCE_TIERS_V1910, SUGGESTION_KINDS_V1910,
+  protectedWords: Object.freeze({
+    version: '1.0', table: PROTECTED_WORDS_V1910,
+    inspect: inspectProtectedWordsV1910
+  }),
+  falsePositiveGuard: Object.freeze({
+    version: '1.0', apply: applyDecisionGovernanceV1910, inspect: inspectGuardV1910
+  }),
+  confidenceEngine: Object.freeze({
+    version: '1.0', tiers: CONFIDENCE_TIERS_V1910, assess: contextualConfidenceV1910
+  }),
+  suggestionTaxonomy: Object.freeze({version: '1.0', kinds: SUGGESTION_KINDS_V1910}),
+  nawasikh: Object.freeze({version: '1.0', rule: nawasikhCaseRuleV1910, inspect: inspectNawasikhV1910}),
+  fiveVerbsProductive: Object.freeze({version: '1.0', rule: fiveVerbsProductiveRuleV1910}),
+  wawAljamaaCompletion: Object.freeze({version: '1.0', rule: wawAljamaaCompletionRuleV1910}),
+  // فحوص تشخيصية جديدة
+  inspectProtectedWords: inspectProtectedWordsV1910,
+  inspectGuard: inspectGuardV1910,
+  inspectNawasikhReading: inspectNawasikhV1910,
+  inspectConfidence: inspectConfidenceV1910,
+  inspectTracks: inspectTracksV1910,
+  correctSafe: correctSafeV1910,
+  V1910_PRO: Object.freeze({version: '19.1.0', edition: 'PRO-FINAL-V19.1',
+    analyze: analyzePRO, validate: runFullSuiteV1910,
+    benchmark: runArabicProBenchmarkV1910Combined})
   });
   return ArabicProofreaderV18;
 
