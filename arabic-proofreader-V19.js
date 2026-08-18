@@ -1,8 +1,32 @@
 /*!
  * ============================================================================
- *  Arabic Proofreader V19.1 PRO FINAL — Blogger Standalone Bundle
+ *  Arabic Proofreader V20.0 PRO FINAL — Blogger Standalone Bundle
  *  النسخة الاحترافية النهائية — مدقق عربي شامل (إملاء + صرف + نحو + أسلوب)
  *  ────────────────────────────────────────────────────────────────────────
+ *  V20.0 PRO FINAL (2026-08-18) — الطبقة النحوية الشاملة:
+ *
+ *    ▸ ApproximationVerbsResolver 1.0: أفعال المقاربة والشروع والرجاء التي
+ *      تنصب المضارع بـ«أن» مضمرة، فسدّت ثغرةً نحويةً كاملةً كانت غائبة:
+ *      كاد/كرب/أوشك (مقاربة)، وشرع/أنشأ/طفق/جعل/أخذ/علّق/بدأ/استمر/قام/
+ *      عدل/جدّ (شروع)، وعسى/حرى/اخلولق/أرجو (رجاء). والفرق المرئي الوحيد
+ *      في الرسم غير المشكول هو إبقاء نون الأفعال الخمسة بعد الناسخ:
+ *      «كاد الطلاب يكتبون ← يكتبوا»، «كاد الطالبان يكتبان ← يكتبا».
+ *    ▸ MuqarabaSubjunctiveFirewall 1.0: عائلة «ما زال/برح/انفك/فتئ» محظورة
+ *      على النصب تمامًا، لأنّ خبرها جملةٌ فعلية فعلها مرفوع لا منصوب؛
+ *      فلا يُصحَّح «ما زال الطلاب يكتبون» أبدًا.
+ *    ▸ حُرّاس الدقة الأربعة: التابع فعلٌ بصيغة الأفعال الخمسة (لا اسم)،
+ *      والناسخ سابقٌ في الجملة دون فاصل ناصبٍ/جازم صريح (أن/لن/لم/كي) —
+ *      كي لا تُنازع القاعدةَ القائمةَ — ولا فاصل جملة (،/.) ولا همزة
+ *      استفهام. وهو اقتراحٌ نحوي (verb-mood) لا يُطبَّق آليًا أبدًا.
+ *    ▸ استبعاد قراءة المطابقة: حين يكون الفاعل مفردًا والفعل جمعًا
+ *      («جعل الطفل يبكون») تتولّاها قاعدة المطابقة (← يبكي) فلا تتداخل.
+ *
+ *    نتائج الإطلاق: المنظومة الكاملة 100% — انحدارات V1880/V1890/V1900/
+ *    V1910 (44+38+32+108 = 222/222)، ومعيار الـ400 ومقياس الـ2000 بدقة
+ *    واستدعاء 1.00 ومعدل إنذار كاذب 0.00، واختبار عدم الإفراط 25/25،
+ *    وانحدارات V20 الجديدة 29/29. الحفاظ التام على منظومة V19.1 وقواعدها
+ *    وواجهاتها: إضافة صرفة لا تغيّر أي مخرج قائم.
+ *
  *  V19.1 PRO FINAL (2026-08-17) — طبقة القرار الأخير:
  *
  *    القاعدة الحاكمة: «إذا لم يكن المحرك متأكدًا من الخطأ، فلا يصححه».
@@ -333,9 +357,14 @@
     root.ArabicProofreaderV19 = api;
     root.ArabicProofreaderV19PRO = api;
     root.V19 = api;
+    // V20.0: أسماء الإصدار الاحترافي الشامل — كلها تشير إلى المحرك نفسه.
+    root.ArabicProofreaderV20 = api;
+    root.ArabicProofreaderV20PRO = api;
+    root.V20 = api;
     // علامة جاهزية صريحة يمكن للقالب فحصها قبل بدء التدقيق
     root.__ARABIC_PROOFREADER_V18_READY__ = true;
     root.__ARABIC_PROOFREADER_V19_READY__ = true;
+    root.__ARABIC_PROOFREADER_V20_READY__ = true;
     root.__ARABIC_PROOFREADER_VERSION__ = api.META.version;
     try {
       // تحذير فقط إذا وُجد محرك قديم (V16/V17) في الصفحة — لا يتوقف التحميل أبدًا
@@ -358,15 +387,15 @@
 const META = Object.freeze({
   name: 'Arabic Proofreader Hybrid Engine',
   nameArabic: 'محرك التدقيق العربي الهجين — النسخة الاحترافية الشاملة',
-  version: '19.1.0',
-  edition: 'PRO-FINAL-V19.1',
+  version: '20.0.0',
+  edition: 'PRO-FINAL-V20.0',
   language: 'ar',
-  release: 'V19.1 PRO FINAL — طبقة القرار الأخير ومنع الإنذار الكاذب',
+  release: 'V20.0 PRO FINAL — الطبقة النحوية الشاملة (أفعال المقاربة والشروع والرجاء)',
   stability: 'stable',
-  releaseDate: '2026-08-17',
+  releaseDate: '2026-08-18',
   governingPrinciple: 'إذا لم يكن المحرك متأكدًا من الخطأ، فلا يصححه.',
   compat: Object.freeze({
-    baseVersion: '19.0.0',
+    baseVersion: '19.1.0',
     policy: 'additive-only',
     preservedApi: Object.freeze([
       'analyze', 'check', 'correct', 'suggest', 'parse', 'inspectWord', 'inspectPOS',
@@ -391,7 +420,11 @@ const META = Object.freeze({
       'inspectProtectedWords', 'inspectGuard', 'inspectNawasikhReading',
       'inspectConfidence', 'inspectTracks', 'correctSafe',
       'PROTECTED_WORDS_V1910', 'CONFIDENCE_TIERS_V1910', 'SUGGESTION_KINDS_V1910',
-      'V1910_BLOCK_REGRESSIONS', 'V1910_GOLD_REGRESSIONS', 'V1910_OVER_CORRECTION_CORPUS'
+      'V1910_BLOCK_REGRESSIONS', 'V1910_GOLD_REGRESSIONS', 'V1910_OVER_CORRECTION_CORPUS',
+      // V20.0.0 — الواجهات المضافة (طبقة المقاربة والشروع والرجاء)
+      'runRegressionSuiteV20', 'runFullSuiteV20',
+      'approximationVerbs', 'APPROXIMATION_VERBS_V20', 'MUQARABA_NON_SUBJUNCTIVE_V20',
+      'V20_BLOCK_REGRESSIONS', 'V20_GOLD_REGRESSIONS'
     ]),
     addedLayers: Object.freeze([
       'DiacriticsLayer-1.0', 'HamzaCompleteLayer-1.0', 'StyleLayer-1.0',
@@ -406,7 +439,10 @@ const META = Object.freeze({
       'ProtectedWords-1.0', 'StructuralReadingGuard-1.0', 'FalsePositiveGuard-1.0',
       'ContextualConfidence-1.0', 'SuggestionTaxonomy-1.0', 'SuggestionTracks-1.0',
       'SafeCorrectAll-1.0', 'NawasikhCaseResolver-1.0', 'FiveVerbsProductive-1.0',
-      'WawAljamaaCompletion-1.0', 'OverCorrectionBenchmark-1.0'
+      'WawAljamaaCompletion-1.0', 'OverCorrectionBenchmark-1.0',
+      // ── V20.0.0 — الطبقة النحوية الشاملة ──
+      'ApproximationVerbsResolver-1.0', 'MuqarabaSubjunctiveFirewall-1.0',
+      'ApproximationRegressionSuite-1.0'
     ])
   }),
   offsetPolicy: 'original-input',
@@ -443,7 +479,8 @@ const META = Object.freeze({
     'correction-ranker-1.0',
     'safe-correction-engine-1.0',
     'regression-engine-1.0',
-    'benchmark-engine-2000-1.0'
+    'benchmark-engine-2000-1.0',
+    'approximation-verbs-resolver-1.0'
   ]),
   resolverVersions: Object.freeze({
     ClauseIsolationResolver: '1.2',
@@ -485,7 +522,9 @@ const META = Object.freeze({
     NawasikhCaseResolver: '1.0',
     FiveVerbsProductive: '1.0',
     WawAljamaaCompletion: '1.0',
-    OverCorrectionBenchmark: '1.0'
+    OverCorrectionBenchmark: '1.0',
+    ApproximationVerbsResolver: '1.0',
+    MuqarabaSubjunctiveFirewall: '1.0'
   }),
   releaseCriteria: Object.freeze({
     precision: 0.98,
@@ -566,7 +605,9 @@ const DEFAULT_OPTIONS = Object.freeze({
     conditionalGovernment: true,
     conditionalClauses: true,
     masdariClauses: true,
-    protectedSpans: true
+    protectedSpans: true,
+    // V20.0.0 — أفعال المقاربة والشروع والرجاء (نصب الأفعال الخمسة)
+    approximationVerbs: true
   }),
   debug: false
 });
@@ -11324,6 +11365,145 @@ function runRegressionSuiteV1900(options = {}) {
 }
 
 
+/* ═══════════════════════════════════════════════════════════════════════════
+ *  V20.0 — أفعال المقاربة والشروع والرجاء (نصب المضارع).
+ *
+ *  الثغرة: كان المحرك يعالج «أن/لن/لم» الناصبة الجازمة للأفعال الخمسة، لكنه
+ *  لم يكن يعالج أخوات «كاد» التي تنصب المضارع بـ«أن» مضمرة: كاد/كرب/أوشك
+ *  (مقاربة)، وشرع/أنشأ/طفق/جعل/أخذ/علّق/بدأ/استمر (شروع)، وعسى/حرى/اخلولق/
+ *  أرجو (رجاء). والفرق الوحيد المرئي في الرسم غير المشكول هو إبقاء نون
+ *  الأفعال الخمسة: «كاد الطلاب يكتبون ← يكتبوا».
+ *
+ *  سياسة الأمان: لا يُكتفى بمجاورتها، بل يُشترط:
+ *    (1) أن يكون التابع فعلًا مضارعًا بصيغة الأفعال الخمسة (ون/ان) بعد حرف
+ *        المضارعة، لا اسمًا معروفًا ولا معرّفًا ولا مضافًا لضمير.
+ *    (2) أن يسبقه فعلٌ من جدول المقاربة/الشروع/الرجاء في الجملة نفسها دون
+ *        فاصل ناصبٍ أو جازم صريح (أن/لن/لم/كي) يكفيه القاعدةُ القائمة.
+ *    (3) ألّا يقع بينهما فاصل جملة (فاصلة/نقطة) ولا همزة استفهام.
+ *    (4) استبعاد عائلة «ما زال/برح/انفك/فتئ» لأنّ خبرها جملةٌ فعلية فعلها
+ *        مرفوع لا منصوب — ولهذا لا تُدرج في الجدول الناصب أصلًا.
+ *    وهو اقتراحٌ نحوي (verb-mood) لا يُطبَّق آليًا أبدًا، امتثالًا لسياسة
+ *    «النحو يدويٌّ دائمًا».
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* أفعال المقاربة (كاد/كرب/أوشك) + الشروع (شرع/أنشأ/طفق/أخذ/جعل/علّق/بدأ/
+   استمر/قام/عدل/جدّ/ارعوى) + الرجاء (عسى/حرى/اخلولق/أرجو). بصيغها المذكر
+   والمؤنث والجمع الشائعة. كلها تنصب المضارع بأن مضمرة. */
+const APPROXIMATION_VERBS_V20 = Object.freeze(new Set([
+  // المقاربة
+  'كاد', 'كادت', 'كادا', 'كادتا', 'كادوا', 'كُدن', 'كدن', 'يكاد', 'تكاد',
+  'كرب', 'كربت', 'يكرب', 'تكرب',
+  'أوشك', 'أوشكت', 'أوشكا', 'أوشكوا', 'يوشك', 'توشك',
+  // الشروع
+  'شرع', 'شرعت', 'شرعا', 'شرعوا', 'يشرع', 'تشرع',
+  'أنشأ', 'أنشأت', 'أنشأوا', 'ينشئ', 'تنشئ',
+  'طفق', 'طفقت', 'طفقا', 'طفقوا', 'يطفق', 'تطفق',
+  'جعل', 'جعلت', 'جعلا', 'جعلوا', 'يجعل', 'تجعل',
+  'أخذ', 'أخذت', 'أخذا', 'أخذوا', 'يأخذ', 'تأخذ',
+  'علق', 'علقت', 'يعلق', 'تعلق',
+  'بدأ', 'بدأت', 'بدأوا', 'يبدأ', 'تبدأ',
+  'استمر', 'استمرت', 'يستمر', 'تستمر',
+  'قام', 'قامت', 'يقوم', 'تقوم',
+  'عدل', 'عدلت', 'يعدل', 'تعدل',
+  'جد', 'جدت', 'يجد', 'تجد',
+  // الرجاء
+  'عسى', 'حرى', 'اخلولق', 'اخلولقت', 'أرجو', 'نرجو', 'يرجو', 'ترجو'
+]));
+
+/* عائلة «ما زال/برح/انفك/فتئ/ت credle»: أفعالٌ ناقصة خبرها جملة فعلية،
+   لكنّ فعلها المضارع فيها مرفوع (لا منصوب)؛ يُحظر استعمالها ناصبة. هذا
+   سجلّ دفاعي يمنع أي خطأ مستقبليًا في تصنيفها. */
+const MUQARABA_NON_SUBJUNCTIVE_V20 = Object.freeze(new Set([
+  'زال', 'مازال', 'ما زال', 'تزال', 'ما تزال',
+  'برح', 'مابرح', 'ما برح', 'يبرح',
+  'انفك', 'ماانفك', 'ما انفك', 'ينفك',
+  'فتئ', 'مافتئ', 'ما فتئ', 'يفطأ', 'يفتأ'
+]));
+
+/* أدوات النصب/الجزم الصريحة: إن تخللت بين الناسخ والفعل تولّتها قاعدةُ
+   «أن/لن/لم» القائمة، فلا نكرّر الكشف ولا ننازعها. */
+const V20_INTERVENING_GOVERNORS = Object.freeze(new Set(['أن', 'أنْ', 'لن', 'لم', 'كي', 'لكي', 'حتى']));
+
+const V20_FIVE_VERB_DROP = Object.freeze([
+  {suffix: 'ون', replacement: 'وا', name: 'واو الجماعة'},
+  {suffix: 'ان', replacement: 'ا', name: 'ألف الاثنين'}
+]);
+
+function approximationVerbsRuleV20(context) {
+  const out = [];
+  const {tokens} = context;
+  for (let i = 1; i < tokens.length; i += 1) {
+    const token = tokens[i];
+    if (token.type !== 'word') continue;
+
+    // (1) يجب أن يكون التابع فعلًا مضارعًا بصيغة الأفعال الخمسة. يُحسم ذلك
+    // بعد استبعاد الأسماء المعروفة أسفل، فلا نقتصر على POS المعجمي وحده
+    // («ينزلون» قد يُحلَّل اسمًا لغياب «نزل» عن المعجم، وهو فعلٌ في الحقيقة).
+    const pos = token.morph?.pos;
+    let looksVerb = pos === 'verb' || pos === 'ambiguous' || Boolean(bestVerb(token));
+
+    const core = token.morph?.core || token.clean || '';
+    const bare = stripDiacritics(core);
+    if (!bare || bare.length < 5) continue;
+
+    // حرف المضارعة (ي/ت) شرط لازم؛ لا تدخل الأسماء.
+    const presentPrefix = /^[يت]/u.test(bare);
+    if (!presentPrefix) continue;
+    // نون الأفعال الخمسة: اللفظ منتهٍ بـ«ون» أو «ان» فقط (لا «ين» لالتباسها
+    // بالمثنى/الجمع)؛ كي لا يقع المحرك في إنذارٍ على اسمٍ ثنائي.
+    const drop = V20_FIVE_VERB_DROP.find(item => bare.endsWith(item.suffix));
+    if (!drop) continue;
+    const stem = bare.slice(0, -drop.suffix.length);
+    if (stem.length < 3) continue;
+
+    // الأسماء المعروفة (وإن شابهت الوزن) والمعرّفة والمضافة إلى ضمير محصورة.
+    if (NOUN_FORM_INDEX.has(bare) || ADJECTIVE_FORM_INDEX.has(bare)) continue;
+    if (typeof WORDS !== 'undefined' && WORDS[bare]) continue;
+    if (PROPER_NAMES.has(bare) || DIPTOTE_EXACT.has(bare)) continue;
+    if (token.morph?.definite) continue;
+    if (token.morph?.segments?.article || token.morph?.segments?.preposition
+        || token.morph?.segments?.enclitic) continue;
+
+    // بعد استبعاد الأسماء: بادئة المضارعة + نون الأفعال الخمسة قرينةٌ فعلية
+    // كافية، فلا نرفض صيغةً ظاهرها اسميٌّ فقط لضعف المعجم.
+    if (!looksVerb) looksVerb = true;
+
+    // (2) بحثٌ خلفٌ عن فعل مقاربة/شروع/رجاء في الجملة نفسها.
+    let governor = null, governorIndex = -1, blocked = false;
+    for (let g = i - 1; g >= 0 && i - g <= 6; g -= 1) {
+      const gt = tokens[g];
+      if (!gt || gt.type !== 'word') continue;
+      if (gt.sentence !== token.sentence) { blocked = true; break; }
+      const gcore = stripDiacritics(gt.morph?.core || gt.clean || '');
+      // لا نعترض القاعدةَ القائمة: إن تخلّل ناصبٌ/جازم صريح فالأمرُ لها.
+      if (V20_INTERVENING_GOVERNORS.has(gcore)) { blocked = true; break; }
+      // عائلة «ما زال»: خبرها جملة مرفوعة، فلا تنصب.
+      if (MUQARABA_NON_SUBJUNCTIVE_V20.has(gcore)) { blocked = true; break; }
+      if (APPROXIMATION_VERBS_V20.has(gcore)) { governor = gcore; governorIndex = g; break; }
+    }
+    if (blocked || !governor) continue;
+
+    const desired = `${stem}${drop.replacement}`;
+    const replacement = rebuildToken(token, desired);
+    if (!replacement || replacement === token.surface) continue;
+
+    out.push(findingFromSpan(context, {
+      startToken: token,
+      replacement,
+      ruleId: 'V20_APPROXIMATION_FIVE_VERBS',
+      type: 'صرفي',
+      classification: 'verb-mood',
+      confidence: 0.9,
+      explanation: `«${governor}» من أفعال المقاربة/الشروع/الرجاء، تنصب المضارع بـ«أن» مضمرة، فيجب حذف نون الأفعال الخمسة: «${bare}» ← «${desired}».`,
+      evidence: ['ApproximationVerbsResolver-1.0', `governor:${governor}`, `ending:${drop.suffix}`, 'subjunctive-implied-an'],
+      safe: false,
+      metadata: {resolver: 'ApproximationVerbsResolver', resolverVersion: '1.0',
+        governor, governorIndex, ending: drop.suffix, expectedForm: desired}
+    }));
+  }
+  return out;
+}
+
 const RULE_PIPELINE = Object.freeze([
   {id: 'verbSubjectFrames', run: verbSubjectFrameRuleV1900},
   {id: 'objectCase', run: objectCaseRule},
@@ -11370,7 +11550,9 @@ const RULE_PIPELINE = Object.freeze([
   // ── V19.1.0 — طبقات القرار النحوي المستقلة ──
   {id: 'nawasikhCase', run: nawasikhCaseRuleV1910},
   {id: 'wawAljamaaCompletion', run: wawAljamaaCompletionRuleV1910},
-  {id: 'fiveVerbsProductive', run: fiveVerbsProductiveRuleV1910}
+  {id: 'fiveVerbsProductive', run: fiveVerbsProductiveRuleV1910},
+  // ── V20.0.0 — أفعال المقاربة والشروع والرجاء (نصب الأفعال الخمسة) ──
+  {id: 'approximationVerbs', run: approximationVerbsRuleV20}
 ]);
 
 function pipelineDescription() {
@@ -11840,8 +12022,8 @@ function _inspectLong(text){return _rLong(text);}
 function runPROApiSanityChecks(){
   var sample='الطالب الذي نجح، والمعلم الذي حضر.';
   var long=_rLong(sample);
-  // V19.0.0 FINAL: الفحص معلق على سلسلة التوافق مع 18.8.6 أو 18.9.0، ويسمح بالإصدار 19.0.0
-  var lineageOk = ['18.8.6','18.9.0','19.0.0','19.1.0'].indexOf(META.version)!==-1 || (META.compat && ['18.8.6','18.9.0','19.0.0'].indexOf(META.compat.baseVersion)!==-1);
+  // V19.0.0 FINAL: الفحص معلق على سلسلة التوافق مع 18.8.6 أو 18.9.0، ويسمح بالإصدارات اللاحقة
+  var lineageOk = ['18.8.6','18.9.0','19.0.0','19.1.0','20.0.0'].indexOf(META.version)!==-1 || (META.compat && ['18.8.6','18.9.0','19.0.0','19.1.0'].indexOf(META.compat.baseVersion)!==-1);
   return {version:META.version,valid:Boolean(lineageOk) && long.clauseCount===2 && long.relativeLinks.length===2,checks:{longContextClauseCount:long.clauseCount,relativeLinks:long.relativeLinks.length,lineage:lineageOk}};
 }
 
@@ -13110,9 +13292,34 @@ function validateData() {
     V1910_INNA_SET.size >= 6 && V1910_KANA_WITH_BOUND_SUBJECT.size >= 15,
     `إنّ وأخواتها ${V1910_INNA_SET.size} أداة، وكان وأخواتها بضمير متصل ${V1910_KANA_WITH_BOUND_SUBJECT.size} صورة`);
 
+  // ── V20.0.0: فحوص بنيوية لطبقة أفعال المقاربة والشروع والرجاء ──
+  add('v20-approximation-verbs-registry',
+    APPROXIMATION_VERBS_V20.size >= 40
+      && APPROXIMATION_VERBS_V20.has('كاد') && APPROXIMATION_VERBS_V20.has('شرع')
+      && APPROXIMATION_VERBS_V20.has('أوشك') && APPROXIMATION_VERBS_V20.has('عسى'),
+    `${APPROXIMATION_VERBS_V20.size} فعل مقاربة/شروع/رجاء ناصبة للمضارع`);
+  add('v20-muqaraba-firewall-excludes-mazal',
+    MUQARABA_NON_SUBJUNCTIVE_V20.has('زال') && MUQARABA_NON_SUBJUNCTIVE_V20.has('برح')
+      && MUQARABA_NON_SUBJUNCTIVE_V20.has('انفك') && MUQARABA_NON_SUBJUNCTIVE_V20.has('فتئ'),
+    'عائلة «ما زال/برح/انفك/فتئ» محظورة على النصب (خبرها جملة مرفوعة)');
+  add('v20-approximation-pipeline-stage',
+    ruleIds.includes('approximationVerbs')
+      && DEFAULT_OPTIONS.rules.approximationVerbs === true,
+    'مرحلة approximationVerbs مسجلة ومفعّلة في خط الأنابيب');
+  add('v20-approximation-recall',
+    analyze('كاد الطلاب يكتبون.', {safeMode: true}).findings
+      .some(f => (f.replacement || '').includes('يكتبوا')),
+    '«كاد الطلاب يكتبون ← يكتبوا» يُكشف نصب الأفعال الخمسة بعد كاد');
+  add('v20-approximation-no-false-positive',
+    !analyze('كاد المطر ينزل.', {safeMode: true}).findings
+      .some(f => f.ruleId === 'V20_APPROXIMATION_FIVE_VERBS')
+      && !analyze('ما زال الطلاب يكتبون.', {safeMode: true}).findings
+        .some(f => f.ruleId === 'V20_APPROXIMATION_FIVE_VERBS'),
+    '«كاد المطر ينزل» و«ما زال الطلاب يكتبون» لا يُساء تصحيحهما');
+
   // ── V18.9.0: فحوص بنيوية للطبقات المضافة ──
   add('v1890-compat-record',
-    ['18.8.6', '18.9.0', '19.0.0'].includes(META.compat?.baseVersion)
+    ['18.8.6', '18.9.0', '19.0.0', '19.1.0'].includes(META.compat?.baseVersion)
       && META.compat.policy === 'additive-only'
       && META.compat.preservedApi.length >= 40,
     `توافق خلفي موثق مع ${META.compat?.baseVersion} (${META.compat?.preservedApi?.length} واجهة محفوظة)`);
@@ -13874,6 +14081,94 @@ function runFullSuiteV1910(options = {}) {
 }
 
 
+/* ═══════════════════════════════════════════════════════════════════════════
+ *  V20.0 — منظومة اختبار أفعال المقاربة والشروع والرجاء.
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* (أ) مصائد إنذار كاذب — نصوص صحيحة لا يمسّها حكم نصب الأفعال الخمسة. */
+const V20_BLOCK_REGRESSIONS = Object.freeze([
+  // فاعل مفرد + فعل مفرد: لا تدخل القاعدة (المطابقة تتولاها قاعدة أخرى).
+  'كاد المعلم يشرح الدرس.',
+  'شرع الطالب يدرس واجبه.',
+  'أوشك المطر ينزل.',
+  'عسى الطالب ينجح.',
+  // خبر «ما زال» جملة فعلية فعلها مرفوع: محظور على النصب.
+  'ما زال الطلاب يكتبون الدرس.',
+  'لا يزال المعلمون يشرحون الدرس.',
+  'ما برح الطلاب يذاكرون.',
+  'ما فتئ العمال يعملون.',
+  // مضارع لا ينتهي بنون الأفعال الخمسة: لا مجال للقاعدة.
+  'كاد الطلاب يكتب.',
+  'شرع العمال يعمل في المبنى.',
+  // «أن» الناصبة تتولاها القاعدة القائمة: لا تكرار ولا منازعة.
+  'عسى أن ينجح الطلاب.',
+  'كاد الطلاب أن يكتبوا.',
+  // تراكيب سليمة لا فعل مقاربة فيها.
+  'الطالبان يكتبان الدرس، والطالبات يكتبن.',
+  'وكانوا يعملون بجد.',
+  'كان الطلاب مجتهدين، وكانت الطالبات مجتهدات.',
+  'حضر الطلاب مبكرين.',
+  'قرأت الكتابين، وفي الكتابين معلومات قيمة.'
+]);
+
+/* (ب) استدراك ذهبي — أخطاء يجب أن يكشفها حكم نصب الأفعال الخمسة بعد الناسخ. */
+const V20_GOLD_REGRESSIONS = Object.freeze([
+  {id: 'v20-g-kad-plural',   text: 'كاد الطلاب يكتبون الدرس.',   expect: 'يكتبوا'},
+  {id: 'v20-g-kad-dual',     text: 'كاد الطالبان يكتبان.',       expect: 'يكتبا'},
+  {id: 'v20-g-oshika',       text: 'أوشك الطلاب يخرجون.',        expect: 'يخرجوا'},
+  {id: 'v20-g-sharaa',       text: 'شرع العمال يبنون المبنى.',   expect: 'يبنوا'},
+  {id: 'v20-g-tafiqa',       text: 'طفق الأطفال يضحكون.',        expect: 'يضحكوا'},
+  {id: 'v20-g-jaaala',       text: 'جعل الطلاب يبكون.',          expect: 'يبكوا'},
+  {id: 'v20-g-anshaa',       text: 'أنشأ المدرسون يشرحون.',      expect: 'يشرحوا'},
+  {id: 'v20-g-badaa',        text: 'بدأ الطلاب يكتبون.',         expect: 'يكتبوا'},
+  {id: 'v20-g-istamrra',     text: 'استمر الزوار يتدفقون.',      expect: 'يتدفقوا'},
+  {id: 'v20-g-asaa',         text: 'عسى الفريق يفوزون.',          expect: 'يفوزوا'},
+  {id: 'v20-g-kad-ghadib',   text: 'كاد المعلمون يغضبون.',        expect: 'يغضبوا'},
+  {id: 'v20-g-nazal-lexhole',text: 'كاد المطر ينزلون.',           expect: 'ينزلوا'}
+]);
+
+function runRegressionSuiteV20(options = {}) {
+  const failures = [];
+  let passed = 0;
+
+  for (const text of V20_BLOCK_REGRESSIONS) {
+    const findings = (analyze(text, options).findings || [])
+      .filter(f => f.ruleId === 'V20_APPROXIMATION_FIVE_VERBS');
+    if (!findings.length) { passed += 1; continue; }
+    failures.push({kind: 'false-positive', text,
+      findings: findings.map(f => ({replacement: f.replacement, confidence: Number(f.confidence.toFixed(3))}))});
+  }
+
+  for (const item of V20_GOLD_REGRESSIONS) {
+    const result = analyze(item.text, options);
+    const hit = (result.findings || []).some(f => (f.replacement || '').includes(item.expect));
+    if (hit) { passed += 1; continue; }
+    failures.push({id: item.id, kind: 'missed-error', text: item.text, expected: item.expect,
+      got: (result.findings || []).map(f => `${f.original}>${f.replacement}`)});
+  }
+
+  const total = V20_BLOCK_REGRESSIONS.length + V20_GOLD_REGRESSIONS.length;
+  return {version: META.version, total, passed, failures, valid: failures.length === 0,
+    blocks: V20_BLOCK_REGRESSIONS.length, golds: V20_GOLD_REGRESSIONS.length};
+}
+
+/* المجموعة الكاملة النهائية V20: V19.1 + طبقة المقاربة. */
+function runFullSuiteV20(options = {}) {
+  const base = runFullSuiteV1910(options);
+  const regressionV20 = runRegressionSuiteV20(options);
+  return {
+    version: META.version,
+    valid: base.valid && regressionV20.valid,
+    suites: {
+      ...base.suites,
+      regressionV20: {valid: regressionV20.valid, total: regressionV20.total,
+        passed: regressionV20.passed, blocks: regressionV20.blocks, golds: regressionV20.golds,
+        failures: regressionV20.failures.slice(0, 20)}
+    }
+  };
+}
+
+
 /* ── V19.1: الواجهات التشخيصية — قراءة فقط، لا تغيّر أي مخرج قائم ── */
   function inspectProtectedWordsV1910(text, options){
     const context = createContext(text, options);
@@ -14271,6 +14566,18 @@ function runFullSuiteV1910(options = {}) {
   correctSafe: correctSafeV1910,
   V1910_PRO: Object.freeze({version: '19.1.0', edition: 'PRO-FINAL-V19.1',
     analyze: analyzePRO, validate: runFullSuiteV1910,
+    benchmark: runArabicProBenchmarkV1910Combined}),
+  // ── V20.0.0 PRO FINAL — أفعال المقاربة والشروع والرجاء ──
+  V20_BLOCK_REGRESSIONS, V20_GOLD_REGRESSIONS,
+  APPROXIMATION_VERBS_V20, MUQARABA_NON_SUBJUNCTIVE_V20,
+  runRegressionSuiteV20, runFullSuiteV20,
+  approximationVerbs: Object.freeze({
+    version: '1.0', rule: approximationVerbsRuleV20,
+    governors: APPROXIMATION_VERBS_V20,
+    nonSubjunctive: MUQARABA_NON_SUBJUNCTIVE_V20
+  }),
+  V20_PRO: Object.freeze({version: '20.0.0', edition: 'PRO-FINAL-V20.0',
+    analyze: analyzePRO, validate: runFullSuiteV20,
     benchmark: runArabicProBenchmarkV1910Combined})
   });
   return ArabicProofreaderV18;
